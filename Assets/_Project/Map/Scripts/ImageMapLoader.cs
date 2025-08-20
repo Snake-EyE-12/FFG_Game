@@ -77,7 +77,6 @@ public class ImageMapLoader : MonoBehaviour
             Instantiate(spawnpointPrefab, basePos, Quaternion.identity, transform);
         }
 
-
         int stackHeight = -1;
 
         if (IsCloseColor(pixel, blue)) return;
@@ -101,8 +100,6 @@ public class ImageMapLoader : MonoBehaviour
 
     bool IsCloseColor(Color a, Color b)
     {
-        if (Color.yellow.Equals(a)) Debug.Log("yellow");
-
         return Mathf.Abs(a.r - b.r) < colorTolerance &&
                Mathf.Abs(a.g - b.g) < colorTolerance &&
                Mathf.Abs(a.b - b.b) < colorTolerance;
