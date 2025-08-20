@@ -572,6 +572,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7416341912020700377, guid: 054b4014a3b6848459be0e6ed10f2a11, type: 3}
+      propertyPath: colorTolerance
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 8133037728173560426, guid: 054b4014a3b6848459be0e6ed10f2a11, type: 3}
       propertyPath: m_Name
       value: MapLoader

@@ -22,7 +22,7 @@ public class MeshCombiner : MonoBehaviour
             materialToMeshFilters[mat].Add(mf);
         }
 
-        // Combine each material group separately
+        // combine each material group separately
         foreach (var kvp in materialToMeshFilters)
         {
             Material mat = kvp.Key;
