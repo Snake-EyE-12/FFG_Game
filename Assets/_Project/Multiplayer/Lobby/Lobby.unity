@@ -1298,7 +1298,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d82bcc60d2049749bb8fb935ec40b44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lobbyPlayerUIPrefab: {fileID: 5043620221037157069, guid: 908b8af745b042843a9901e023346af0, type: 3}
+  prefab: {fileID: 5043620221037157069, guid: 908b8af745b042843a9901e023346af0, type: 3}
+  parent: {fileID: 656546908}
 --- !u!114 &656546911
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2756,7 +2757,7 @@ GameObject:
   - component: {fileID: 1749511830}
   - component: {fileID: 1749511829}
   - component: {fileID: 1749511828}
-  - component: {fileID: 1749511831}
+  - component: {fileID: 1749511832}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -2827,7 +2828,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1749511829}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1749511832}
+        m_TargetAssemblyTypeName: NetworkSceneChanger, Assembly-CSharp
+        m_MethodName: ChangeScene
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1749511829
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2866,7 +2879,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1749511826}
   m_CullTransparentMesh: 1
---- !u!114 &1749511831
+--- !u!114 &1749511832
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2875,9 +2888,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1749511826}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7eab617b65ec4231b670884c80a36708, type: 3}
+  m_Script: {fileID: 11500000, guid: e12b44c397c741f3b83319e9fb7e9dca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sceneToLoad: MultiplayerTest
 --- !u!1 &1777087485
 GameObject:
   m_ObjectHideFlags: 0
@@ -2891,7 +2905,7 @@ GameObject:
   - component: {fileID: 1777087487}
   - component: {fileID: 1777087486}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: LobbyCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

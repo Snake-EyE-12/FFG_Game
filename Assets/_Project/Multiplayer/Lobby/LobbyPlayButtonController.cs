@@ -27,22 +27,22 @@ public class LobbyPlayButtonController : MonoBehaviour
 
 public static class LobbyDataContainer
 {
-    private static List<LobbyPlayerUIBinder> lobbyPlayers = new();
+    private static List<PlayerLobbyUIBrain> lobbyPlayers = new();
     
-    public static void Join(LobbyPlayerUIBinder lobbyPlayer)
+    public static void Join(PlayerLobbyUIBrain lobbyPlayer)
     {
         lobbyPlayers.Add(lobbyPlayer);
         OnJoin?.Invoke(lobbyPlayer);
     }
 
-    public static void Leave(LobbyPlayerUIBinder lobbyPlayerUI)
+    public static void Leave(PlayerLobbyUIBrain lobbyPlayerUI)
     {
         lobbyPlayers.Remove(lobbyPlayerUI);
     }
     
     public static Action OnPlayerReady;
     public static Action OnPlayerNotReady;
-    public static Action<LobbyPlayerUIBinder> OnJoin;
+    public static Action<PlayerLobbyUIBrain> OnJoin;
 
     public static void BecomeReady()
     {
