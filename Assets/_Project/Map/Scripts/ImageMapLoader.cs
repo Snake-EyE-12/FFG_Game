@@ -20,11 +20,11 @@ public class ImageMapLoader : MonoBehaviour
 
 
     // COLORS FOR LEVEL BUILDING
-    readonly Color blue = new Color(0f, 0f, 1f);          // #0000FF
-    readonly Color green = new Color(0f, 1f, 0f);          // #00FF00
-    readonly Color yellow = new Color(1f, 1f, 0f);          // #FFFF00
-    readonly Color red = new Color(1f, 0f, 0f);          // #FF0000
-    readonly Color cyan = new Color(0f, 1f, 1f);        // 00FFFF
+    readonly Color blue = new Color(0f, 0f, 1f);          // #0000FF - AIR
+    readonly Color green = new Color(0f, 1f, 0f);          // #00FF00 - JUST GROUND
+    readonly Color yellow = new Color(1f, 1f, 0f);          // #FFFF00 - 1 HIGH COVER
+    readonly Color red = new Color(1f, 0f, 0f);          // #FF0000 - 2 HIGH COVER
+    readonly Color cyan = new Color(0f, 1f, 1f);        // 00FFFF - SPAWN POINT
 
     private void Start()
     {
