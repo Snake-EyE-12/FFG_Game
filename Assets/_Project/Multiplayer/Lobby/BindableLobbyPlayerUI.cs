@@ -1,15 +1,9 @@
 using UnityEngine;
 
-public class LobbyPlayerUI : MonoBehaviour
+
+public class BindableLobbyPlayerUI : BindableObject<LobbyBindingController, BindableLobbyPlayerUI, PlayerLobbyUIBrain>
 {
     [SerializeField] private LobbyReadyStateDisplay readyDisplayer;
-    private LobbyPlayerUIBinder binding;
-
-    public void Initialize(LobbyPlayerUIBinder player)
-    {
-        binding = player;
-        DisplayNotReady();
-    }
 
     public void DisplayReady()
     {
@@ -23,7 +17,6 @@ public class LobbyPlayerUI : MonoBehaviour
 
     public void OnToggleReadyPressed()
     {
-        if (binding != null && binding.IsOwner)
-            binding.ToggleReadyServerRpc();
+        if (bindedBrain.IsOwner) bindedBrain.ToggleReadyServerRpc();
     }
 }

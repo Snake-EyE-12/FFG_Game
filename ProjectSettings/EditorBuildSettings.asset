@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/_Project/Multiplayer/Lobby.unity
+    path: Assets/_Project/Multiplayer/Lobby/Lobby.unity
     guid: 92aa87e185fa6ec4ca5a948021a76632
   - enabled: 1
     path: Assets/NGO_Minimal_Setup/NGO_Setup.unity
