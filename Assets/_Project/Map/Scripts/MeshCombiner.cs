@@ -12,6 +12,8 @@ public class MeshCombiner : MonoBehaviour
         // Group meshes by material
         foreach (MeshRenderer mr in meshRenderers)
         {
+            if (mr.gameObject.CompareTag("Obstacle")) continue;
+
             MeshFilter mf = mr.GetComponent<MeshFilter>();
             if (mf == null || mf.sharedMesh == null) continue;
 
@@ -56,6 +58,7 @@ public class MeshCombiner : MonoBehaviour
         // Disable originals
         foreach (MeshRenderer mr in meshRenderers)
         {
+            if (mr.gameObject.CompareTag("Obstacle")) continue;
             mr.gameObject.SetActive(false);
         }
     }
