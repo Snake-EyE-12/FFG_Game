@@ -9,9 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5704819686581050246}
-  - component: {fileID: 8362877138997600708}
-  - component: {fileID: 120996208102800241}
-  - component: {fileID: 30617097107154462}
+  - component: {fileID: 3221410852400890841}
+  - component: {fileID: 1016789579184579357}
+  - component: {fileID: 1233421564895617938}
+  - component: {fileID: 8671501550297297374}
   m_Layer: 0
   m_Name: Cover
   m_TagString: Obstacle
@@ -34,15 +35,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &8362877138997600708
-MeshFilter:
+--- !u!114 &3221410852400890841
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3069774858843123830}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &120996208102800241
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32487d5a3bad77d4dabc2532f18dd95e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  respawnTime: 10
+  mr: {fileID: 1016789579184579357}
+  coll: {fileID: 8671501550297297374}
+--- !u!23 &1016789579184579357
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -87,7 +95,15 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &30617097107154462
+--- !u!33 &1233421564895617938
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3069774858843123830}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!65 &8671501550297297374
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
