@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameCharacterDummy : MonoBehaviour
 {
@@ -10,7 +12,14 @@ public class GameCharacterDummy : MonoBehaviour
     }
     
     // ALL INPUT EVENT METHODS CALLED BY CONTROLLER
-    
-    
+
+    [SerializeField] private PlayerMovement movement;
+    private Vector2 moveDir;
+    public void Move(InputAction.CallbackContext context)
+    {
+        if(characterController.IsOwner) characterController.ReceiveInput(context.ReadValue<Vector2>());
+    }
+    public PlayerMovement GetMovement() => movement;
+
     //
 }
