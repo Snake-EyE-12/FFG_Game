@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ImageMapLoader : MonoBehaviour
@@ -37,6 +38,8 @@ public class ImageMapLoader : MonoBehaviour
 
     void LoadMap()
     {
+        Spawning.spawnPoints = new List<Transform>();
+
         if (mapCollection == null || mapCollection.maps.Length == 0)
         {
             Debug.LogError("No maps assigned in MapCollection!");
@@ -74,7 +77,8 @@ public class ImageMapLoader : MonoBehaviour
         
         if(IsCloseColor(pixel, cyan)) // SPAWNPOINT
         {
-            Instantiate(spawnpointPrefab, basePos, Quaternion.identity, transform);
+            GameObject spawnBlock = Instantiate(spawnpointPrefab, basePos, Quaternion.identity, transform);
+            Spawning.spawnPoints.Add(spawnBlock.transform.GetChild(0));
         }
 
         int stackHeight = -1;
