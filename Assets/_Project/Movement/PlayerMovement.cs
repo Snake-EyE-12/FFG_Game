@@ -7,23 +7,23 @@ public class PlayerMovement : MonoBehaviour
     public Transform referencePlane;
     [SerializeField] private float moveSpeed;
     
-    private Vector2 moveDir;
+    
     private Rigidbody rb;
+    private Vector2 lastMoveDir;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
     }
 
-    private void FixedUpdate()
+    public void Move(Vector2 direction)
     {
-        rb.linearVelocity = (referencePlane.right * moveDir.x * moveSpeed) + (referencePlane.forward * moveDir.y * moveSpeed);
-        Debug.Log(rb.linearVelocity);
-        Debug.Log(moveDir);
+        lastMoveDir = direction;
     }
 
-    public void Move(InputAction.CallbackContext context)
+    private void FixedUpdate()
     {
-        moveDir = context.ReadValue<Vector2>();
+        rb.linearVelocity = (referencePlane.right * (lastMoveDir.x * moveSpeed)) + (referencePlane.forward * (lastMoveDir.y * moveSpeed));
     }
+
 }
