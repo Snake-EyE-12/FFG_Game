@@ -14,13 +14,24 @@ public class GameCharacterController : NetworkBehaviour
             .WithInitialization(this)
             .Build();
     }
+    
+    public void ReceiveInput(Vector2 inputDirection)
+    {
+        dummy.GetMovement().Move(inputDirection);
+    }
+
 }
+
+
+
+
 
 public class GameCharacterBuilder : IGameCharacterBuilder
 {
     private GameCharacterDummy _lobbyUIPrefab;
     private Transform _parent;
     private GameCharacterController _controller;
+
 
     public GameCharacterBuilder(GameCharacterDummy prefab)
     {
