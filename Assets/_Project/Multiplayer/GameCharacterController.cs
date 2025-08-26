@@ -1,3 +1,4 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -10,8 +11,6 @@ public class GameCharacterController : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-
-        
     }
     
     //public void ReceiveInput(Vector2 inputDirection)
@@ -26,13 +25,19 @@ public class GameCharacterController : NetworkBehaviour
 
     public void StartGame()
     {
-        Vector3 pos = Spawning.GetSpawnPoint().position;
-        dummy = new GameCharacterBuilder(gameCharacterPrefab)
-            .WithInitialization(this)
-            .WithPosition(pos)
-            .Build();
+        if (IsOwner)
+        {
+            RequestSpawnServerRpc();
+        }
 
-        dummy.GetComponent<NetworkObject>().Spawn();
+        //Vector3 pos = Spawning.GetSpawnPoint().position;
+        //dummy = new GameCharacterBuilder(gameCharacterPrefab)
+        //    .WithInitialization(this)
+        //    .WithPosition(pos)
+        //    .Build();
+
+
+        //dummy.GetComponent<NetworkObject>().Spawn();
     }
 
     private void OnEnable()
@@ -44,11 +49,23 @@ public class GameCharacterController : NetworkBehaviour
     {
         GameStarter.OnGameStart -= StartGame;
     }
+
+
+    [ServerRpc]
+    private void RequestSpawnServerRpc(ServerRpcParams rpcParams = default)
+    {
+        SpawnSelf(rpcParams.Receive.SenderClientId);
+    }
+
+    private void SpawnSelf(ulong clientId)
+    {
+        dummy = new GameCharacterBuilder(gameCharacterPrefab)
+            .WithInitialization(this)
+            .WithPosition(Spawning.GetSpawnPoint().position)
+            .Build();
+        dummy.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);
+    }
 }
-
-
-
-
 
 public class GameCharacterBuilder : IGameCharacterBuilder
 {
