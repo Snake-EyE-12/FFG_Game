@@ -15,10 +15,6 @@ public class GameCharacterDummy : MonoBehaviour
 
     [SerializeField] private PlayerMovement movement;
     private Vector2 moveDir;
-    public void Move(InputAction.CallbackContext context)
-    {
-        if(characterController.IsOwner) characterController.ReceiveInput(context.ReadValue<Vector2>());
-    }
     public PlayerMovement GetMovement() => movement;
 
     //

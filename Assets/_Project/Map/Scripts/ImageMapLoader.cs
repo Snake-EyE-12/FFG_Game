@@ -34,6 +34,8 @@ public class ImageMapLoader : MonoBehaviour
         LoadMap();
 
         GetComponent<MeshCombiner>().CombineMeshesPerMaterial();
+
+        Spawning.spawnPlane = transform;
     }
 
     void LoadMap()

@@ -4,6 +4,7 @@ using UnityEngine;
 public static class Spawning
 {
     public static List<Transform> spawnPoints = new List<Transform>();
+    public static Transform spawnPlane;
 
     private static Queue<Transform> spawnQueue = new Queue<Transform>();
     private static System.Random rng = new System.Random();

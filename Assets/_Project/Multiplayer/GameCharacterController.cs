@@ -1,5 +1,6 @@
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameCharacterController : NetworkBehaviour
 {
@@ -13,20 +14,23 @@ public class GameCharacterController : NetworkBehaviour
         
     }
     
-    public void ReceiveInput(Vector2 inputDirection)
+    //public void ReceiveInput(Vector2 inputDirection)
+    //{
+    //    dummy.GetMovement().Move(inputDirection);
+    //}
+
+    public void OnMove(InputAction.CallbackContext context)
     {
-        dummy.GetMovement().Move(inputDirection);
+        if (IsOwner) dummy.GetMovement().Move(context.ReadValue<Vector2>());
     }
-    
+
     public void StartGame()
     {
-        base.OnInSceneObjectsSpawned();
+        Vector3 pos = Spawning.GetSpawnPoint().position;
         dummy = new GameCharacterBuilder(gameCharacterPrefab)
             .WithInitialization(this)
+            .WithPosition(pos)
             .Build();
-        Debug.Log("BRAIN IN NEW SCENE");
-        dummy.GetMovement().enabled = true;
-        transform.position = Spawning.spawnPoints[0].position;
     }
 
     private void OnEnable()
@@ -49,6 +53,7 @@ public class GameCharacterBuilder : IGameCharacterBuilder
     private GameCharacterDummy _lobbyUIPrefab;
     private Transform _parent;
     private GameCharacterController _controller;
+    private Vector3 _position;
 
 
     public GameCharacterBuilder(GameCharacterDummy prefab)
@@ -56,6 +61,11 @@ public class GameCharacterBuilder : IGameCharacterBuilder
         _lobbyUIPrefab = prefab;
     }
 
+    public IGameCharacterBuilder WithPosition(Vector3 pos)
+    {
+        _position = pos;
+        return this;
+    }
     public IGameCharacterBuilder WithParent(Transform parent)
     {
         _parent = parent;
@@ -70,7 +80,7 @@ public class GameCharacterBuilder : IGameCharacterBuilder
 
     public GameCharacterDummy Build()
     {
-        GameCharacterDummy gme = GameObject.Instantiate(_lobbyUIPrefab, _parent);
+        GameCharacterDummy gme = GameObject.Instantiate(_lobbyUIPrefab, _position, Quaternion.identity, _parent);
         gme.Initialize(_controller);
         return gme;
     }
@@ -79,6 +89,7 @@ public class GameCharacterBuilder : IGameCharacterBuilder
 public interface IGameCharacterBuilder
 {
     IGameCharacterBuilder WithParent(Transform parent);
+    IGameCharacterBuilder WithPosition(Vector3 pos);
     IGameCharacterBuilder WithInitialization(GameCharacterController controller);
     GameCharacterDummy Build();
 
