@@ -9,48 +9,13 @@ public class GameCharacterController : NetworkBehaviour
     [SerializeField] private GameCharacterDummy gameCharacterPrefab;
 
     private GameCharacterDummy dummy;
-    public override void OnNetworkSpawn()
-    {
-        base.OnNetworkSpawn();
-    }
-
-    //public void ReceiveInput(Vector2 inputDirection)
-    //{
-    //    dummy.GetMovement().Move(inputDirection);
-    //}
 
     public void OnMove(InputAction.CallbackContext context)
     {
         if (IsOwner) dummy.GetMovement().Move(context.ReadValue<Vector2>());
     }
 
-    public void StartGame()
-    {
-
-        //Vector3 pos = Spawning.GetSpawnPoint().position;
-        //dummy = new GameCharacterBuilder(gameCharacterPrefab)
-        //    .WithInitialization(this)
-        //    .WithPosition(pos)
-        //    .Build();
-
-
-        //dummy.GetComponent<NetworkObject>().Spawn();
-    }
-
-    private NetworkVariable<bool> firstUpdate = new NetworkVariable<bool>(false);
-    private void Update()
-    {
-        if(firstUpdate.Value)
-        {
-            if (SceneManager.GetActiveScene().name.Equals("Game"))
-            {
-                SpawnSelf();
-                firstUpdate.Value = false;
-            }
-        }
-    }
-
-    private void SpawnSelf()
+    private void SpawnDummy()
     {
         dummy = new GameCharacterBuilder(gameCharacterPrefab)
             .WithInitialization(this)
