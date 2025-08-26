@@ -2,6 +2,7 @@ using System;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class GameCharacterController : NetworkBehaviour
 {
@@ -12,7 +13,7 @@ public class GameCharacterController : NetworkBehaviour
     {
         base.OnNetworkSpawn();
     }
-    
+
     //public void ReceiveInput(Vector2 inputDirection)
     //{
     //    dummy.GetMovement().Move(inputDirection);
@@ -25,10 +26,6 @@ public class GameCharacterController : NetworkBehaviour
 
     public void StartGame()
     {
-        if (IsOwner)
-        {
-            RequestSpawnServerRpc();
-        }
 
         //Vector3 pos = Spawning.GetSpawnPoint().position;
         //dummy = new GameCharacterBuilder(gameCharacterPrefab)
@@ -40,30 +37,26 @@ public class GameCharacterController : NetworkBehaviour
         //dummy.GetComponent<NetworkObject>().Spawn();
     }
 
-    private void OnEnable()
+    private NetworkVariable<bool> firstUpdate = new NetworkVariable<bool>(false);
+    private void Update()
     {
-        GameStarter.OnGameStart += StartGame;
+        if(firstUpdate.Value)
+        {
+            if (SceneManager.GetActiveScene().name.Equals("Game"))
+            {
+                SpawnSelf();
+                firstUpdate.Value = false;
+            }
+        }
     }
 
-    private void OnDisable()
-    {
-        GameStarter.OnGameStart -= StartGame;
-    }
-
-
-    [ServerRpc]
-    private void RequestSpawnServerRpc(ServerRpcParams rpcParams = default)
-    {
-        SpawnSelf(rpcParams.Receive.SenderClientId);
-    }
-
-    private void SpawnSelf(ulong clientId)
+    private void SpawnSelf()
     {
         dummy = new GameCharacterBuilder(gameCharacterPrefab)
             .WithInitialization(this)
             .WithPosition(Spawning.GetSpawnPoint().position)
             .Build();
-        dummy.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);
+        dummy.GetComponent<NetworkObject>().Spawn();
     }
 }
 
