@@ -31,6 +31,8 @@ public class GameCharacterController : NetworkBehaviour
             .WithInitialization(this)
             .WithPosition(pos)
             .Build();
+
+        dummy.GetComponent<NetworkObject>().Spawn();
     }
 
     private void OnEnable()
