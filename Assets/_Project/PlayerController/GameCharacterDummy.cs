@@ -4,18 +4,16 @@ using UnityEngine.InputSystem;
 
 public class GameCharacterDummy : MonoBehaviour
 {
-    private GameCharacterController characterController;
-    public void Initialize(GameCharacterController controller)
-    {
-        // Save controller when needing to send back data ( Collisions )
-        characterController = controller;
-    }
     
-    // ALL INPUT EVENT METHODS CALLED BY CONTROLLER
+    [SerializeField] private SimpleMovement movement;
 
-    [SerializeField] private PlayerMovement movement;
-    private Vector2 moveDir;
-    public PlayerMovement GetMovement() => movement;
+    public void Move(Vector2 dir)
+    {
+        movement.Move(dir);
+    }
 
-    //
+    public void Reset()
+    {
+        movement.Zero();
+    }
 }
