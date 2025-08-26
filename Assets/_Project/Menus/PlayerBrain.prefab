@@ -87,4 +87,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  gameCharacterPrefab: {fileID: 2853150895753720410, guid: edc3e19f5cf18a8468896ba27d3d8f09, type: 3}
+  gameCharacterPrefab: {fileID: 77433037286037992, guid: 7d54d258bb9100947829a0f5135cc04b, type: 3}

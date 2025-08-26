@@ -8,15 +8,18 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Project/Menus/MainMenu.unity
     guid: 343bf9255c597ee41a257eefc7b97b31
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Project/Multiplayer/Lobby/Lobby.unity
     guid: 92aa87e185fa6ec4ca5a948021a76632
   - enabled: 1
     path: Assets/NGO_Minimal_Setup/NGO_Setup.unity
     guid: fe560316b40a294479dccf86e655bd07
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Project/Multiplayer/MultiplayerTest.unity
     guid: c234596b3cd3a454dbf128f39324b9ce
+  - enabled: 1
+    path: Assets/_Project/GameLoop/Game.unity
+    guid: be63b430885e30f45901c25d4fecac05
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

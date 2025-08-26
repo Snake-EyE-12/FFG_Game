@@ -10,16 +10,34 @@ public class GameCharacterController : NetworkBehaviour
     {
         base.OnNetworkSpawn();
 
-        dummy = new GameCharacterBuilder(gameCharacterPrefab)
-            .WithInitialization(this)
-            .Build();
+        
     }
     
     public void ReceiveInput(Vector2 inputDirection)
     {
         dummy.GetMovement().Move(inputDirection);
     }
+    
+    public void StartGame()
+    {
+        base.OnInSceneObjectsSpawned();
+        dummy = new GameCharacterBuilder(gameCharacterPrefab)
+            .WithInitialization(this)
+            .Build();
+        Debug.Log("BRAIN IN NEW SCENE");
+        dummy.GetMovement().enabled = true;
+        transform.position = Spawning.spawnPoints[0].position;
+    }
 
+    private void OnEnable()
+    {
+        GameStarter.OnGameStart += StartGame;
+    }
+
+    private void OnDisable()
+    {
+        GameStarter.OnGameStart -= StartGame;
+    }
 }
 
 
