@@ -7,7 +7,6 @@ public class FingerGun : MonoBehaviour
     private bool aiming;
     private bool gunLoaded;
 
-    [SerializeField] private float aimRotationSpeed;
     private float aimAngle;
     private Vector3 aimDir;
 

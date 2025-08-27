@@ -4,8 +4,6 @@ using UnityEngine.InputSystem;
 
 public class WeaponActionManager : MonoBehaviour
 {
-    public float aimSpeed;
-
     private bool aiming;
     private bool holdingFrag;
 
@@ -32,7 +30,7 @@ public class WeaponActionManager : MonoBehaviour
         {
             if (holdingFrag)
             {
-                fragManager.ThrowFrag();
+                holdingFrag = fragManager.ThrowFrag();
             }
             else if (aiming)
             {
