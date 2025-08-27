@@ -15,12 +15,12 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        //referencePlane = Spawning.spawnPlane;
+        referencePlane = Spawning.spawnPlane;
     }
 
-    public void Move(InputAction.CallbackContext context)
+    public void Move(Vector2 direction)
     {
-        lastMoveDir = context.ReadValue<Vector2>();
+        lastMoveDir = direction;
     }
 
     private void FixedUpdate()
