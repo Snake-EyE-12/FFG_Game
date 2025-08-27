@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerMovement : MonoBehaviour
@@ -13,8 +14,14 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
-        //referencePlane = Spawning.spawnPlane;
         Debug.Log("oiuytrtyuio");
+        GameStarter.OnGameStart += Reset; //Problem
+    }
+
+    private void Reset()
+    {
+        transform.position = Spawning.GetSpawnPoint().position;
+        referencePlane = Spawning.spawnPlane;
     }
 
     private void Awake()
@@ -24,9 +31,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //rb.linearVelocity = (referencePlane.right * moveDir.x * moveSpeed) + (referencePlane.forward * moveDir.y * moveSpeed);
-        //Debug.Log(rb.linearVelocity);
-        //Debug.Log(moveDir);
+        Debug.Log("MOVING: " + moveDir);
+        if(SceneManager.GetActiveScene().name.Equals("Game")) rb.linearVelocity = (referencePlane.right * moveDir.x * moveSpeed) + (referencePlane.forward * moveDir.y * moveSpeed);
     }
 
     public void Move(InputAction.CallbackContext context)

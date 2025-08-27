@@ -39,17 +39,17 @@ public class GameCharacterController : NetworkBehaviour
 
         //dummy.GetComponent<NetworkObject>().Spawn();
     }
-
-    private void OnEnable()
-    {
-        GameStarter.OnGameStart += StartGame;
-    }
-
-    private void OnDisable()
-    {
-        GameStarter.OnGameStart -= StartGame;
-    }
-
+    //
+    // private void OnEnable()
+    // {
+    //     GameStarter.OnGameStart += StartGame;
+    // }
+    //
+    // private void OnDisable()
+    // {
+    //     GameStarter.OnGameStart -= StartGame;
+    // }
+    //
 
     [ServerRpc]
     private void RequestSpawnServerRpc(ServerRpcParams rpcParams = default)
