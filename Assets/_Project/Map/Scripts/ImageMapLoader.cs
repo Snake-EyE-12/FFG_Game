@@ -27,7 +27,7 @@ public class ImageMapLoader : MonoBehaviour
     readonly Color red = new Color(1f, 0f, 0f);          // #FF0000 - 2 HIGH COVER
     readonly Color cyan = new Color(0f, 1f, 1f);        // 00FFFF - SPAWN POINT
 
-    private void Start()
+    private void Awake()
     {
         mapIndex = Random.Range(0, mapCollection.maps.Length);
 
