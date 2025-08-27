@@ -68,6 +68,7 @@ public class FragManager : MonoBehaviour
 
         Frag spawned = Instantiate(fragPrefab, transform.position, transform.rotation);
         spawned.endPos = hitPoint;
+        spawned.parent = gameObject;
         fragCooldownTime = fragCooldownLength;
         return TryHoldFrag();
     }

@@ -104,4 +104,5 @@ MonoBehaviour:
   hitMask:
     serializedVersion: 2
     m_Bits: 192
+  explosion: {fileID: 1363808644761999854, guid: b431301e35d89594ba9f24b2e33ff0fd, type: 3}
   endPos: {x: 0, y: 0, z: 0}
