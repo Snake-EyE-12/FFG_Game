@@ -20,7 +20,7 @@ public class GameCharacterController : NetworkBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
-        if (IsOwner) dummy.GetMovement().Move(context.ReadValue<Vector2>());
+        //if (IsOwner) dummy.GetMovement().Move(context.ReadValue<Vector2>());
     }
 
     public void StartGame()
@@ -39,17 +39,17 @@ public class GameCharacterController : NetworkBehaviour
 
         //dummy.GetComponent<NetworkObject>().Spawn();
     }
-
-    private void OnEnable()
-    {
-        GameStarter.OnGameStart += StartGame;
-    }
-
-    private void OnDisable()
-    {
-        GameStarter.OnGameStart -= StartGame;
-    }
-
+    //
+    // private void OnEnable()
+    // {
+    //     GameStarter.OnGameStart += StartGame;
+    // }
+    //
+    // private void OnDisable()
+    // {
+    //     GameStarter.OnGameStart -= StartGame;
+    // }
+    //
 
     [ServerRpc]
     private void RequestSpawnServerRpc(ServerRpcParams rpcParams = default)

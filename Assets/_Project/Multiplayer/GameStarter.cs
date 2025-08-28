@@ -4,12 +4,10 @@ using UnityEngine;
 
 public class GameStarter : MonoBehaviour
 {
-    public void StartGame()
+    private void Start()
     {
-        if (NetworkManager.Singleton.IsServer)
-        {
-            OnGameStart?.Invoke();
-        }
+        Debug.Log("STARTING NEW GAME SCENE");
+        OnGameStart?.Invoke();
     }
 
     public static Action OnGameStart;
