@@ -7,8 +7,25 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerMovement : MonoBehaviour
 {
+    public enum MoveState
+    {
+        IDLE,
+        AIMING,
+        RUNNING,
+        CROUCHING,
+		CROUCH_WALKING,
+        SLIDING
+    }
+    public MoveState currentMoveState;
+    public MoveState lastMoveState;
+
+
+
     public Transform referencePlane;
-    [SerializeField] private float moveSpeed;
+    [SerializeField,Tooltip("How fast player moves normally")] private float runSpeed;
+    [SerializeField,Tooltip("How fast player moves while crouched")] private float crouchWalkSpeed;
+    [SerializeField,Tooltip("How fast player moves while sliding")] private float slideSpeed;
+    [SerializeField,Tooltip("How long the player slides for")] private float slideDuration;
     
     private Vector2 moveDir;
     private Rigidbody rb;
@@ -37,16 +54,210 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Debug.Log("MOVING: " + moveDir);
-        if (SceneManager.GetActiveScene().name.Equals("Game"))
+        if (SceneManager.GetActiveScene().name.Equals("Game")) // Not good
         {
-            rb.linearVelocity = (referencePlane.right * moveDir.x * moveSpeed) + (referencePlane.forward * moveDir.y * moveSpeed);
-            text.text = transform.position.ToString();
+			FixedUpdateState();
         }
     }
 
-    public void Move(InputAction.CallbackContext context)
+	private void Update()
+	{
+		if (SceneManager.GetActiveScene().name.Equals("Game")) // Not good
+		{
+
+			UpdateState();
+		}
+	}
+
+	public void Move(InputAction.CallbackContext context)
     {
         moveDir = context.ReadValue<Vector2>();
+		OnNewMoveInput();
+	}
+
+	public void OnNewMoveInput()
+	{
+		if (moveDir != Vector2.zero)
+		{ // Trying to move
+			switch (currentMoveState)
+			{
+				case MoveState.IDLE:
+					// start running
+					ChangeState(MoveState.RUNNING);
+					break;
+
+				case MoveState.CROUCHING:
+					// start crouch walking
+					ChangeState(MoveState.CROUCH_WALKING);
+					break;
+				default:
+					// all other cases are ignored with current functionality, add more cases if need be
+					break;
+			}
+		}
+		else
+		{ // Letting go of movement keys
+			switch (currentMoveState)
+			{
+				case MoveState.RUNNING:
+					// start running
+					ChangeState(MoveState.IDLE);
+					break;
+
+				case MoveState.CROUCH_WALKING:
+					// start crouch walking
+					ChangeState(MoveState.CROUCHING);
+					break;
+				default:
+					// all other cases are ignored with current functionality, add more cases if need be
+					break;
+			}
+		}
+	}
+
+	public void MoveRb(float speed)
+	{
+		rb.linearVelocity = (referencePlane.right * moveDir.x * speed) + (referencePlane.forward * moveDir.y * speed);
+	}
+
+	public void Run()
+	{
+		MoveRb(runSpeed);
+	}
+
+	public void CrouchWalk()
+	{
+		MoveRb(crouchWalkSpeed);
+	}
+
+	public void StandingToCrouch()
+	{
+		LowerHeight();
+	}
+
+	public void RunningToSlide()
+	{
+		LowerHeight();
+	}
+
+	public void SlideToCrouch()
+	{
+
+	}
+
+	public void CrouchWalkToRun()
+	{
+		RaiseHeight();
+	}
+
+	public void CrouchToStand()
+	{
+		RaiseHeight();
+	}
+
+	private void LowerHeight()
+	{
+
+	}
+
+	private void RaiseHeight()
+	{
+
+	}
+
+    public void ChangeState(MoveState newState)
+    {
+        if(currentMoveState == newState) return;
+
+        OnExitState();
+
+        lastMoveState = currentMoveState;
+        currentMoveState = newState;
+
+        OnEnterstate();
     }
+
+    private void OnExitState()
+    {
+		switch (currentMoveState)
+		{
+			case MoveState.IDLE:
+				break;
+			case MoveState.AIMING:
+				break;
+			case MoveState.RUNNING:
+				break;
+			case MoveState.CROUCHING:
+				break;
+			case MoveState.CROUCH_WALKING:
+				break;
+			case MoveState.SLIDING:
+				break;
+		}
+	}
+
+	private void OnEnterstate()
+    {
+		switch (currentMoveState)
+		{
+			case MoveState.IDLE:
+				break;
+			case MoveState.AIMING:
+				break;
+			case MoveState.RUNNING:
+				break;
+			case MoveState.CROUCHING:
+				break;
+			case MoveState.CROUCH_WALKING:
+				break;
+			case MoveState.SLIDING:
+				break;
+		}
+	}
+
+    private void UpdateState()
+    {
+		switch (currentMoveState)
+		{
+			case MoveState.IDLE:
+				break;
+			case MoveState.AIMING:
+				break;
+			case MoveState.RUNNING:
+				break;
+			case MoveState.CROUCHING:
+				break;
+			case MoveState.CROUCH_WALKING:
+				break;
+			case MoveState.SLIDING:
+				break;
+		}
+	}
+
+	private void FixedUpdateState()
+	{
+		switch (currentMoveState)
+		{
+			case MoveState.IDLE:
+				break;
+			case MoveState.AIMING:
+				break;
+			case MoveState.RUNNING:
+				{
+					Run();
+				}
+				break;
+			case MoveState.CROUCHING:
+
+				break;
+			case MoveState.CROUCH_WALKING:
+				{
+					CrouchWalk();
+				}
+				break;
+			case MoveState.SLIDING:
+				break;
+		}
+	}
+
 }
