@@ -35,6 +35,7 @@ public class PlayerMovement : NetworkBehaviour
     private Rigidbody rb;
 
 	private float slideTimer;
+	private Vector2 slideDir;
 
     [SerializeField] TMP_Text text;
 
@@ -83,7 +84,6 @@ public class PlayerMovement : NetworkBehaviour
 			enabled = false;
 		}
 	}
-
 
 	#region INPUT ACTIONS
 	public void Move(InputAction.CallbackContext context)
@@ -165,19 +165,25 @@ public class PlayerMovement : NetworkBehaviour
 		}
 	}
 
-	public void MoveRb(float speed)
+	public void MoveRb(float speed, Vector2 dir)
 	{
-		rb.linearVelocity = (referencePlane.right * moveDir.x * speed) + (referencePlane.forward * moveDir.y * speed);
+		rb.linearVelocity = (referencePlane.right * dir.x * speed) + (referencePlane.forward * dir.y * speed);
 	}
+
 
 	public void Run()
 	{
-		MoveRb(runSpeed);
+		MoveRb(runSpeed, moveDir);
 	}
 
 	public void CrouchWalk()
 	{
-		MoveRb(crouchWalkSpeed);
+		MoveRb(crouchWalkSpeed, moveDir);
+	}
+
+	public void Slide()
+	{
+		MoveRb(slideSpeed, slideDir);
 	}
 
 	public void StandingToCrouch()
@@ -213,7 +219,7 @@ public class PlayerMovement : NetworkBehaviour
 	{
 		colliderT.localScale = new Vector3(colliderT.localScale.x, 
 											colliderT.localScale.y * 0.5f, 
-											colliderT.localScale.y);
+											colliderT.localScale.z);
 		colliderT.localPosition = new Vector3(colliderT.localPosition.x, 
 											colliderT.localPosition.y - 1, 
 											colliderT.localPosition.z);
@@ -223,10 +229,22 @@ public class PlayerMovement : NetworkBehaviour
 	{
 		colliderT.localScale = new Vector3(colliderT.localScale.x,
 									colliderT.localScale.y * 2f,
-									colliderT.localScale.y);
+									colliderT.localScale.z);
 		colliderT.localPosition = new Vector3(colliderT.localPosition.x,
 											colliderT.localPosition.y + 1,
 											colliderT.localPosition.z);
+	}
+
+	private void EndSlide()
+	{
+		if(moveDir != Vector2.zero)
+		{
+			ChangeState(MoveState.CROUCH_WALKING);
+		}
+		else
+		{
+			ChangeState(MoveState.CROUCHING);
+		}
 	}
 
     public void ChangeState(MoveState newState)
@@ -275,6 +293,8 @@ public class PlayerMovement : NetworkBehaviour
 			case MoveState.CROUCH_WALKING:
 				break;
 			case MoveState.SLIDING:
+				slideTimer = slideDuration;
+				slideDir = moveDir;
 				break;
 		}
 	}
@@ -294,6 +314,11 @@ public class PlayerMovement : NetworkBehaviour
 			case MoveState.CROUCH_WALKING:
 				break;
 			case MoveState.SLIDING:
+				slideTimer -= Time.deltaTime;
+				if(slideTimer <= 0)
+				{
+					EndSlide();
+				}
 				break;
 		}
 	}
@@ -312,7 +337,6 @@ public class PlayerMovement : NetworkBehaviour
 				}
 				break;
 			case MoveState.CROUCHING:
-
 				break;
 			case MoveState.CROUCH_WALKING:
 				{
@@ -320,6 +344,9 @@ public class PlayerMovement : NetworkBehaviour
 				}
 				break;
 			case MoveState.SLIDING:
+				{
+					Slide();
+				}
 				break;
 		}
 	}

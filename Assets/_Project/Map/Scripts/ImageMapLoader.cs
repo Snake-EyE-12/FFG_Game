@@ -99,7 +99,7 @@ public class ImageMapLoader : MonoBehaviour
         // layers of cover (1 or 2)
         for (int i = 1; i < stackHeight; i++)
         {
-            Vector3 pos = basePos + new Vector3(0, i * blockSize - .5f, 0);
+            Vector3 pos = basePos + new Vector3(0, i * blockSize, 0);
             Instantiate(coverPrefab, pos, Quaternion.identity, transform);
         }
     }
