@@ -1,12 +1,14 @@
 using NUnit.Framework.Api;
 using System;
+using System.Collections;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : NetworkBehaviour
 {
     public enum MoveState
     {
@@ -31,6 +33,8 @@ public class PlayerMovement : MonoBehaviour
     
     private Vector2 moveDir;
     private Rigidbody rb;
+
+	private float slideTimer;
 
     [SerializeField] TMP_Text text;
 
@@ -71,15 +75,30 @@ public class PlayerMovement : MonoBehaviour
 		}
 	}
 
+	public override void OnNetworkSpawn()
+	{
+		if (!IsOwner)
+		{
+			// Prevent remote players from reading input on this instance
+			enabled = false;
+		}
+	}
+
+
 	#region INPUT ACTIONS
 	public void Move(InputAction.CallbackContext context)
     {
-        moveDir = context.ReadValue<Vector2>();
+		if (!IsOwner) return;
+		
+		moveDir = context.ReadValue<Vector2>();
 		OnNewMoveInput();
+		
 	}
 
 	public void Crouch(InputAction.CallbackContext context)
 	{
+		if (!IsOwner) return;
+		
 		if(context.performed)
 		{
 			switch(currentMoveState)
@@ -101,6 +120,7 @@ public class PlayerMovement : MonoBehaviour
 					break;
 			}
 		}
+		
 	}
 
 	#endregion
@@ -303,5 +323,4 @@ public class PlayerMovement : MonoBehaviour
 				break;
 		}
 	}
-
 }
