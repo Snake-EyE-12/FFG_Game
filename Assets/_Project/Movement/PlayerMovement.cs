@@ -293,7 +293,7 @@ public class PlayerMovement : NetworkBehaviour
 			case MoveState.CROUCH_WALKING:
 				break;
 			case MoveState.SLIDING:
-				slideTimer = slideDuration;
+				slideTimer = Time.time;
 				slideDir = moveDir;
 				break;
 		}
@@ -314,8 +314,9 @@ public class PlayerMovement : NetworkBehaviour
 			case MoveState.CROUCH_WALKING:
 				break;
 			case MoveState.SLIDING:
-				slideTimer -= Time.deltaTime;
-				if(slideTimer <= 0)
+				float timeSliding = Time.time - slideTimer;
+				bool stoppedMidSlide = timeSliding > 0.5f && rb.linearVelocity.magnitude < 1;
+				if(timeSliding > slideDuration || stoppedMidSlide)
 				{
 					EndSlide();
 				}
