@@ -1,3 +1,4 @@
+using NUnit.Framework.Api;
 using System;
 using TMPro;
 using UnityEngine;
@@ -22,6 +23,7 @@ public class PlayerMovement : MonoBehaviour
 
 
     public Transform referencePlane;
+	public Transform colliderT;
     [SerializeField,Tooltip("How fast player moves normally")] private float runSpeed;
     [SerializeField,Tooltip("How fast player moves while crouched")] private float crouchWalkSpeed;
     [SerializeField,Tooltip("How fast player moves while sliding")] private float slideSpeed;
@@ -69,11 +71,39 @@ public class PlayerMovement : MonoBehaviour
 		}
 	}
 
+	#region INPUT ACTIONS
 	public void Move(InputAction.CallbackContext context)
     {
         moveDir = context.ReadValue<Vector2>();
 		OnNewMoveInput();
 	}
+
+	public void Crouch(InputAction.CallbackContext context)
+	{
+		if(context.performed)
+		{
+			switch(currentMoveState)
+			{
+				case MoveState.IDLE:
+					StandingToCrouch();
+					break;
+				case MoveState.RUNNING:
+					RunningToSlide(); 
+					break;
+				case MoveState.CROUCHING:
+					CrouchToStand();
+					break;
+				case MoveState.CROUCH_WALKING:
+					CrouchWalkToRun();
+					break;
+				default:
+					// other cases can be ignored
+					break;
+			}
+		}
+	}
+
+	#endregion
 
 	public void OnNewMoveInput()
 	{
@@ -132,37 +162,51 @@ public class PlayerMovement : MonoBehaviour
 
 	public void StandingToCrouch()
 	{
+		ChangeState(MoveState.CROUCHING);
 		LowerHeight();
 	}
 
 	public void RunningToSlide()
 	{
+		ChangeState(MoveState.SLIDING);
 		LowerHeight();
 	}
 
 	public void SlideToCrouch()
 	{
-
+		ChangeState(MoveState.CROUCHING);
 	}
 
 	public void CrouchWalkToRun()
 	{
+		ChangeState(MoveState.RUNNING);
 		RaiseHeight();
 	}
 
 	public void CrouchToStand()
 	{
+		ChangeState(MoveState.IDLE);
 		RaiseHeight();
 	}
 
 	private void LowerHeight()
 	{
-
+		colliderT.localScale = new Vector3(colliderT.localScale.x, 
+											colliderT.localScale.y * 0.5f, 
+											colliderT.localScale.y);
+		colliderT.localPosition = new Vector3(colliderT.localPosition.x, 
+											colliderT.localPosition.y - 1, 
+											colliderT.localPosition.z);
 	}
 
 	private void RaiseHeight()
 	{
-
+		colliderT.localScale = new Vector3(colliderT.localScale.x,
+									colliderT.localScale.y * 2f,
+									colliderT.localScale.y);
+		colliderT.localPosition = new Vector3(colliderT.localPosition.x,
+											colliderT.localPosition.y + 1,
+											colliderT.localPosition.z);
 	}
 
     public void ChangeState(MoveState newState)
