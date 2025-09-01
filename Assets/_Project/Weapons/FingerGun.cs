@@ -12,6 +12,8 @@ public class FingerGun : NetworkBehaviour
 	[SerializeField] private float aimAnglePinchSpeed = 5f;
 	[SerializeField] private float aimStartAngle = 30f;
 
+	private Transform topOfHead;
+
 	private bool aiming = false;
 	private bool gunLoaded = true;
 
@@ -27,6 +29,14 @@ public class FingerGun : NetworkBehaviour
 		0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 	private NetworkVariable<Vector3> netAimDir = new NetworkVariable<Vector3>(
 	Vector3.zero, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+
+	private void Start()
+	{
+		if(topOfHead == null)
+		{
+			topOfHead = transform.GetChild(0).GetChild(0);
+		}
+	}
 
 	private void Update()
 	{
