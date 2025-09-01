@@ -1,9 +1,19 @@
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
 public class Health : NetworkBehaviour
 {
 	private bool hasFingerGun = false;
+	[SerializeField] private float respawnDelay = 3f;
+	private Collider col;
+	private Renderer rend;
+
+	private void Awake()
+	{
+		col = GetComponent<Collider>();
+		rend = GetComponent<Renderer>();
+	}
 
 	public void HitPlayer()
 	{
@@ -31,26 +41,55 @@ public class Health : NetworkBehaviour
 		}
 		else
 		{
-			Death();
+			Debug.Log("Handling hit");
+			if (IsServer)
+			{
+				Debug.Log("is server");
+				// Tell all clients to hide this player
+				DisablePlayerClientRpc();
+
+				// Start respawn coroutine only on server
+				StartCoroutine(RespawnRoutineServer());
+			}
+			else
+			{
+				Debug.Log("not server");
+			}
+		}
+	}
+	private IEnumerator RespawnRoutineServer()
+	{
+		Debug.Log("Respawn routine server pre");
+		yield return new WaitForSeconds(respawnDelay);
+		Debug.Log("Respawn routine server post");
+
+		// Ask the server to give the spawn point to the owning client
+		PlayerMovement owner = transform.parent.gameObject.GetComponent<PlayerMovement>();
+		if (owner != null)
+		{
+			Debug.Log("found owner");
+			owner.RequestSpawnFromServer();
+			EnablePlayerClientRpc();
 		}
 	}
 
-	private void Death()
+	[ClientRpc]
+	public void DisablePlayerClientRpc()
 	{
-		// Despawn networked object if it has NetworkObject
-		if (TryGetComponent<NetworkObject>(out var netObj) && netObj.IsSpawned)
-		{
-			netObj.Despawn();
-		}
-		else
-		{
-			Destroy(gameObject);
-		}
+		col.enabled = false;
+		rend.enabled = false;
+	}
+
+	[ClientRpc]
+	public void EnablePlayerClientRpc()
+	{
+		col.enabled = true;
+		rend.enabled = true;
 	}
 
 	[ClientRpc]
 	private void RemoveFingerGunClientRpc()
 	{
-
+		// play animation / UI effect here
 	}
 }

@@ -1,29 +1,15 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
-/// <summary>
-/// Singleton manager for spawn points. Server owns the queue.
-/// Clients request a spawn point and get it via ClientRpc.
-/// </summary>
 public class Spawning : NetworkBehaviour
 {
 	public static Spawning Instance;
 
-	public List<Transform> spawnPoints = new List<Transform>();
-
 	private Queue<Transform> spawnQueue = new Queue<Transform>();
-	private System.Random rng = new System.Random();
 
 	private void Awake()
 	{
-		if (!IsServer)
-		{
-			enabled = false;
-		}
-
 		if (Instance != null && Instance != this)
 		{
 			Destroy(gameObject);
@@ -33,57 +19,70 @@ public class Spawning : NetworkBehaviour
 	}
 
 	/// <summary>
-	/// Server-only: refill the queue by shuffling all spawn points.
+	/// Register a single spawn point. Call from ImageMapLoader or similar.
+	/// Only the host/server should do this.
 	/// </summary>
-	private void RefillQueue()
+	public void RegisterSpawnPoint(Transform t)
 	{
-		List<Transform> shuffled = new List<Transform>(spawnPoints);
-		int n = shuffled.Count;
-		while (n > 1)
-		{
-			n--;
-			int k = rng.Next(n + 1);
-			Transform temp = shuffled[k];
-			shuffled[k] = shuffled[n];
-			shuffled[n] = temp;
-		}
-
-		foreach (var sp in shuffled) spawnQueue.Enqueue(sp);
-		Debug.Log("Refilled with: " + spawnQueue.Count);
+		Debug.Log("Register point at " + t.position);
+		spawnQueue.Enqueue(t);
 	}
 
 	/// <summary>
-	/// Client requests a spawn point. Server responds via ClientRpc.
+	/// Get next spawn point from queue (server only)
+	/// </summary>
+	private Transform GetNextSpawnPoint()
+	{
+		Debug.Log("Getting next spawn point");
+		if (spawnQueue.Count == 0)
+		{
+			Debug.LogWarning("Spawn queue empty!");
+			return null;
+		}
+
+		Transform t = spawnQueue.Dequeue();
+		Debug.Log("Get point at " + t.position);
+		spawnQueue.Enqueue(t); // optional: rotate queue
+		return t;
+	}
+
+	/// <summary>
+	/// Called by client to request a spawn position (initial spawn or respawn)
 	/// </summary>
 	[ServerRpc(RequireOwnership = false)]
 	public void RequestSpawnPointServerRpc(ServerRpcParams rpcParams = default)
 	{
-		if (!IsServer) return;
+		Debug.Log("Requesting spawn point server rpc");
+		Transform nextSpawn = GetNextSpawnPoint();
+		if (nextSpawn == null) return;
+		Debug.Log("Got next spawn " + nextSpawn.position.ToString());
 
-		if (spawnQueue.Count == 0) RefillQueue();
-		Transform sp = spawnQueue.Dequeue();
-
-		Debug.Log("Request got: " + sp.position);
-		// Send the spawn position back only to the requesting client
-		RespondSpawnPointClientRpc(sp.position, rpcParams.Receive.SenderClientId);
+		// send spawn position back to only requesting client
+		RespawnClientRpc(nextSpawn.position, rpcParams.Receive.SenderClientId);
 	}
+
+	/// <summary>
+	/// Server tells the client where to spawn
+	/// </summary>
 	[ClientRpc]
-	private void RespondSpawnPointClientRpc(Vector3 spawnPos, ulong clientId)
+	private void RespawnClientRpc(Vector3 spawnPos, ulong targetClientId)
 	{
-		if (NetworkManager.Singleton.LocalClientId != clientId) return;
+		Debug.Log("Respawn Client RPC");
+		if (NetworkManager.Singleton.LocalClientId != targetClientId) return;
 
 		if (PlayerMovement.LocalInstance != null)
 		{
+			Debug.Log("Found local instance");
 			PlayerMovement.LocalInstance.OnReceivedSpawnPoint(spawnPos);
 		}
 		else
 		{
-			// Queue the spawn position to be applied later
-			StartCoroutine(WaitForLocalInstance(spawnPos));
+			// In case the local player hasn't spawned yet
+			StartCoroutine(WaitForLocalPlayer(spawnPos));
 		}
 	}
 
-	private IEnumerator WaitForLocalInstance(Vector3 spawnPos)
+	private System.Collections.IEnumerator WaitForLocalPlayer(Vector3 spawnPos)
 	{
 		while (PlayerMovement.LocalInstance == null)
 			yield return null;

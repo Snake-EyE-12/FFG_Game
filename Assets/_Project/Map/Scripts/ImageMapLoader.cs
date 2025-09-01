@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -20,26 +20,24 @@ public class ImageMapLoader : MonoBehaviour
 	[Range(0f, 0.1f)]
 	public float colorTolerance = 0.01f;
 
-	// COLORS FOR LEVEL BUILDING
-	readonly Color blue = new Color(0f, 0f, 1f);          // AIR
-	readonly Color green = new Color(0f, 1f, 0f);         // JUST GROUND
-	readonly Color yellow = new Color(1f, 1f, 0f);        // 1 HIGH COVER
-	readonly Color red = new Color(1f, 0f, 0f);           // 2 HIGH COVER
-	readonly Color cyan = new Color(0f, 1f, 1f);          // SPAWN POINT
+	// COLORS
+	readonly Color blue = new Color(0f, 0f, 1f);   // AIR
+	readonly Color green = new Color(0f, 1f, 0f);  // JUST GROUND
+	readonly Color yellow = new Color(1f, 1f, 0f); // 1 HIGH COVER
+	readonly Color red = new Color(1f, 0f, 0f);    // 2 HIGH COVER
+	readonly Color cyan = new Color(0f, 1f, 1f);   // SPAWN POINT
 
 	private void Awake()
 	{
 		mapIndex = Random.Range(0, mapCollection.maps.Length);
-
 		LoadMap();
 
+		// Combine *only* static ground
 		GetComponent<MeshCombiner>().CombineMeshesPerMaterial();
 	}
 
 	void LoadMap()
 	{
-		Spawning.Instance.spawnPoints = new List<Transform>();
-
 		if (mapCollection == null || mapCollection.maps.Length == 0)
 		{
 			Debug.LogError("No maps assigned in MapCollection!");
@@ -77,7 +75,12 @@ public class ImageMapLoader : MonoBehaviour
 		if (IsCloseColor(pixel, cyan))
 		{
 			GameObject spawnBlock = Instantiate(spawnpointPrefab, basePos, Quaternion.identity, transform);
-			Spawning.Instance.spawnPoints.Add(spawnBlock.transform.GetChild(0));
+			Transform spawnTransform = spawnBlock.transform.GetChild(0);
+
+			if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+			{
+				Spawning.Instance.RegisterSpawnPoint(spawnTransform);
+			}
 		}
 
 		int stackHeight = -1;
@@ -98,6 +101,7 @@ public class ImageMapLoader : MonoBehaviour
 			cover.Spawn();
 		}
 	}
+
 
 	bool IsCloseColor(Color a, Color b)
 	{
