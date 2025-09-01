@@ -54,7 +54,7 @@ public class FingerGun : NetworkBehaviour
 		float angle = IsOwner ? currentAimAngle : netAimAngle.Value;
 		Vector3 dir = IsOwner ? aimDir : netAimDir.Value;
 
-		if (drawAiming)
+		if (drawAiming && !isReloading)
 		{
 			if (IsOwner)
 				UpdateAimAngleAndDir();
@@ -82,7 +82,7 @@ public class FingerGun : NetworkBehaviour
 	private void UpdateAimAngleAndDir()
 	{
 		Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
-		Plane groundPlane = new Plane(Vector3.up, transform.position);
+		Plane groundPlane = new Plane(Vector3.up, transform.position + Vector3.up);
 
 		if (groundPlane.Raycast(ray, out float distance))
 		{
@@ -173,7 +173,7 @@ public class FingerGun : NetworkBehaviour
 	{
 		if (attemptedPerfectReload) return;
 
-		if (reloadTimer >= perfectReloadStartTime && reloadTimer <= perfectReloadStartTime - perfectReloadLength)
+		if (reloadTimer >= perfectReloadStartTime && reloadTimer <= perfectReloadStartTime + perfectReloadLength)
 		{
 			Reload();
 		}
@@ -186,6 +186,7 @@ public class FingerGun : NetworkBehaviour
 		if (isReloading)
 		{
 			TryPerfectReload();
+			return;
 		}
 
 		if (!aiming || !gunLoaded) return;

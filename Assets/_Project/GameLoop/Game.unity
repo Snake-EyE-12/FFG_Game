@@ -533,6 +533,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PixelShader
       objectReference: {fileID: 0}
+    - target: {fileID: 6330979864306761129, guid: b1f0e6182cadcd742840a449b79ff0d9, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7855610137032015913, guid: b1f0e6182cadcd742840a449b79ff0d9, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1060,7 +1064,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 8400000, guid: 3560bd6925ad48f47b951e31fbf7448d, type: 2}
+  m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1

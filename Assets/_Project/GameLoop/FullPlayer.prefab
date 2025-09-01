@@ -417,6 +417,9 @@ MonoBehaviour:
   aimDist: 100
   aimAnglePinchSpeed: 3
   aimStartAngle: 45
+  reloadLength: 2
+  perfectReloadPosRange: {x: 0.25, y: 0.75}
+  perfectReloadLength: 0.5
 --- !u!114 &1829912666370415154
 MonoBehaviour:
   m_ObjectHideFlags: 0
