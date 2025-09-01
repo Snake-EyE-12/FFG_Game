@@ -22,4 +22,9 @@ public class LobbyUI : MonoBehaviour
     {
         display.DisplayNotReady();
     }
+
+    public bool IsClient(ulong clientId)
+    {
+        return lobbyUIController.OwnerClientId == clientId;
+    }
 }
