@@ -41,13 +41,11 @@ public class Health : NetworkBehaviour
 		}
 		else
 		{
-			Debug.Log("Handling hit");
 			if (IsServer)
 			{
-				// Hide player on all clients
+				Debug.Log("HIT IS SERVER");
 				DisablePlayerClientRpc();
 
-				// Start respawn coroutine only on server
 				StartCoroutine(RespawnRoutine());
 			}
 		}
@@ -55,21 +53,17 @@ public class Health : NetworkBehaviour
 
 	private IEnumerator RespawnRoutine()
 	{
-		// hide visuals
 		rend.enabled = false;
 		col.enabled = false;
 
-		// stop physics
 		Rigidbody rb = transform.parent.GetComponent<Rigidbody>();
 		if (rb != null) rb.isKinematic = true;
 
 		yield return new WaitForSeconds(respawnDelay);
 
-		// Tell the owner client to request a spawn
 		RequestSpawnClientRpc(OwnerClientId);
 	}
 
-	// Targeted ClientRpc: only tells the owning client to request spawn
 	[ClientRpc]
 	private void RequestSpawnClientRpc(ulong targetClientId)
 	{
@@ -78,22 +72,17 @@ public class Health : NetworkBehaviour
 		PlayerMovement.LocalInstance.RequestSpawnFromServer();
 	}
 
-	// Called from PlayerMovement after the server sends the spawn point
 	public void OnReceivedSpawn(Vector3 spawnPos)
 	{
 		Transform playerTransform = transform.parent;
 		Rigidbody rb = playerTransform.GetComponent<Rigidbody>();
 
-		// Stop movement
 		if (rb != null) rb.linearVelocity = Vector3.zero;
 
-		// Move to spawn
 		playerTransform.position = spawnPos;
 
-		// Re-enable physics
 		if (rb != null) rb.isKinematic = false;
 
-		// Show player on all clients
 		EnablePlayerClientRpc();
 	}
 

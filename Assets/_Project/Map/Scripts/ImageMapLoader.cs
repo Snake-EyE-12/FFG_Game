@@ -32,7 +32,6 @@ public class ImageMapLoader : MonoBehaviour
 		mapIndex = Random.Range(0, mapCollection.maps.Length);
 		LoadMap();
 
-		// Combine *only* static ground
 		GetComponent<MeshCombiner>().CombineMeshesPerMaterial();
 	}
 
@@ -79,7 +78,7 @@ public class ImageMapLoader : MonoBehaviour
 
 			if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
 			{
-				Spawning.Instance.RegisterSpawnPoint(spawnTransform);
+				Spawning.RegisterSpawnPoint(spawnTransform);
 			}
 		}
 

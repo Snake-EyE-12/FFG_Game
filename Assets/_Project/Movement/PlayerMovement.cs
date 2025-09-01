@@ -63,27 +63,17 @@ public class PlayerMovement : NetworkBehaviour
 		
 	}
 
-	// Callback from the server telling us where to spawn
 	[HideInInspector] public System.Action<Vector3> RequestedSpawnCallback;
 
 	public void OnReceivedSpawnPoint(Vector3 spawnPos)
 	{
-		Debug.Log("On received spawn point " + spawnPos);
-		//transform.position = spawnPos;
 		transform.GetChild(0).GetComponent<Health>().OnReceivedSpawn(spawnPos);
-		Debug.Log("Set pos " + transform.position);
-
-		// Notify any systems that were waiting for this spawn
 		RequestedSpawnCallback?.Invoke(spawnPos);
 	}
 
 	public void RequestSpawnFromServer()
 	{
-		Debug.Log("Requesting Respawn");
 		if (!IsOwner) return;
-		Debug.Log("Requesting Respawn - Is Owner");
-
-		// Server will pick a spawn and tell this client
 		Spawning.Instance.RequestSpawnPointServerRpc();
 	}
 
@@ -91,7 +81,6 @@ public class PlayerMovement : NetworkBehaviour
 	{
 		if (!IsOwner)
 		{
-			// Prevent remote players from reading input on this instance
 			enabled = false;
 		}
 		else
@@ -167,7 +156,7 @@ public class PlayerMovement : NetworkBehaviour
 			}
 		}
 		else
-		{ // Letting go of movement keys
+		{
 			switch (currentMoveState)
 			{
 				case MoveState.RUNNING:
