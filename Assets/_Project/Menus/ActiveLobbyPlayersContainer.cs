@@ -20,7 +20,6 @@ public class ActiveLobbyPlayersContainer : NetworkBehaviour
 
     private void DestroyChildren()
     {
-        Debug.Log($"DestroyChildren() called with {transform.childCount} children", this);
 
         for (int i = transform.childCount - 1; i >= 0; i--)
         {
@@ -41,16 +40,12 @@ public class ActiveLobbyPlayersContainer : NetworkBehaviour
     [ClientRpc]
     private void RemoveLobbyEntryClientRpc(ulong clientId)
     {
-        Debug.Log("Called 1");
-        // Find the UI child representing this client
         for (int i = transform.childCount - 1; i >= 0; i--)
         {
-            Debug.Log("Called 2");
             var child = transform.GetChild(i).gameObject;
             var entry = child.GetComponent<LobbyUI>();
             if (entry != null && entry.IsClient(clientId))
             {
-                Debug.Log("Called 3");
                 Destroy(child);
                 break;
             }
