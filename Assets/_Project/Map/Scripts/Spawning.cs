@@ -28,6 +28,11 @@ public class Spawning : NetworkBehaviour
 		spawnQueue.Enqueue(t);
 	}
 
+	public void ShuffleSpawnPoints()
+	{
+
+	}
+
 	/// <summary>
 	/// Get next spawn point from queue (server only)
 	/// </summary>

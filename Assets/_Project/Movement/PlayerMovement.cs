@@ -69,7 +69,8 @@ public class PlayerMovement : NetworkBehaviour
 	public void OnReceivedSpawnPoint(Vector3 spawnPos)
 	{
 		Debug.Log("On received spawn point " + spawnPos);
-		transform.position = spawnPos;
+		//transform.position = spawnPos;
+		transform.GetChild(0).GetComponent<Health>().OnReceivedSpawn(spawnPos);
 		Debug.Log("Set pos " + transform.position);
 
 		// Notify any systems that were waiting for this spawn

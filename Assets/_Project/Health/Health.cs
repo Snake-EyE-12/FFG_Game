@@ -44,33 +44,57 @@ public class Health : NetworkBehaviour
 			Debug.Log("Handling hit");
 			if (IsServer)
 			{
-				Debug.Log("is server");
-				// Tell all clients to hide this player
+				// Hide player on all clients
 				DisablePlayerClientRpc();
 
 				// Start respawn coroutine only on server
-				StartCoroutine(RespawnRoutineServer());
-			}
-			else
-			{
-				Debug.Log("not server");
+				StartCoroutine(RespawnRoutine());
 			}
 		}
 	}
-	private IEnumerator RespawnRoutineServer()
-	{
-		Debug.Log("Respawn routine server pre");
-		yield return new WaitForSeconds(respawnDelay);
-		Debug.Log("Respawn routine server post");
 
-		// Ask the server to give the spawn point to the owning client
-		PlayerMovement owner = transform.parent.gameObject.GetComponent<PlayerMovement>();
-		if (owner != null)
-		{
-			Debug.Log("found owner");
-			owner.RequestSpawnFromServer();
-			EnablePlayerClientRpc();
-		}
+	private IEnumerator RespawnRoutine()
+	{
+		// hide visuals
+		rend.enabled = false;
+		col.enabled = false;
+
+		// stop physics
+		Rigidbody rb = transform.parent.GetComponent<Rigidbody>();
+		if (rb != null) rb.isKinematic = true;
+
+		yield return new WaitForSeconds(respawnDelay);
+
+		// Tell the owner client to request a spawn
+		RequestSpawnClientRpc(OwnerClientId);
+	}
+
+	// Targeted ClientRpc: only tells the owning client to request spawn
+	[ClientRpc]
+	private void RequestSpawnClientRpc(ulong targetClientId)
+	{
+		if (NetworkManager.Singleton.LocalClientId != targetClientId) return;
+
+		PlayerMovement.LocalInstance.RequestSpawnFromServer();
+	}
+
+	// Called from PlayerMovement after the server sends the spawn point
+	public void OnReceivedSpawn(Vector3 spawnPos)
+	{
+		Transform playerTransform = transform.parent;
+		Rigidbody rb = playerTransform.GetComponent<Rigidbody>();
+
+		// Stop movement
+		if (rb != null) rb.linearVelocity = Vector3.zero;
+
+		// Move to spawn
+		playerTransform.position = spawnPos;
+
+		// Re-enable physics
+		if (rb != null) rb.isKinematic = false;
+
+		// Show player on all clients
+		EnablePlayerClientRpc();
 	}
 
 	[ClientRpc]
