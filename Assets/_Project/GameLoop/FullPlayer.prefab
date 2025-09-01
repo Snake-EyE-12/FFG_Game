@@ -729,7 +729,7 @@ GameObject:
   - component: {fileID: 310613515294763403}
   - component: {fileID: 261518457727951496}
   m_Layer: 0
-  m_Name: Square
+  m_Name: Graphics
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
