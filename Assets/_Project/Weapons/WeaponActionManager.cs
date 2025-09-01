@@ -22,7 +22,7 @@ public class WeaponActionManager : NetworkBehaviour
 
 	public void Aim(InputAction.CallbackContext context)
 	{
-		if (!IsOwner) return;
+		if (!IsOwner || playerMovement.health.dead) return;
 		if (context.performed && !holdingFrag)
 		{
 			if(playerMovement.TryAim())
@@ -47,7 +47,7 @@ public class WeaponActionManager : NetworkBehaviour
 
 	public void Shoot(InputAction.CallbackContext context)
 	{
-		if (!IsOwner) return;
+		if (!IsOwner || playerMovement.health.dead) return;
 		if (context.performed)
 		{
 			if (holdingFrag)
@@ -70,7 +70,7 @@ public class WeaponActionManager : NetworkBehaviour
 
 	public void HoldFrag(InputAction.CallbackContext context)
 	{
-		if (!IsOwner) return;
+		if (!IsOwner || playerMovement.health.dead) return;
 		if (context.performed && !aiming)
 		{
 			holdingFrag = fragManager.TryHoldFrag();

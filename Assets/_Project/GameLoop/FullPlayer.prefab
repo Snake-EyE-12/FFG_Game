@@ -353,14 +353,13 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   currentMoveState: 0
   lastMoveState: 0
-  referencePlane: {fileID: 0}
   colliderT: {fileID: 4869625001939324330}
   runSpeed: 6
   crouchWalkSpeed: 3
   slideSpeed: 10
-  slideDuration: 1
+  slideDuration: 0.5
   moveDir: {x: 0, y: 0}
-  text: {fileID: 0}
+  health: {fileID: 5020874054130216124}
 --- !u!114 &8666476971072264896
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -431,8 +430,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   fragPrefab: {fileID: 5247502798542790495, guid: 73a4de71d8d74c14fb2159b297e9405a, type: 3}
-  maxThrowDist: 10
   markerPrefab: {fileID: 6205961003405395226, guid: af72fa5703c77a24a976587d20a55285, type: 3}
+  maxThrowDist: 10
   fragCooldownLength: 0.5
   maxFrags: 4
 --- !u!120 &3638910649138186907
@@ -714,3 +713,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  respawnDelay: 3
+  dead: 0

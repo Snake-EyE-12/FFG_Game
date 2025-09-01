@@ -1,6 +1,7 @@
 using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem.Processors;
 
 public class Health : NetworkBehaviour
 {
@@ -8,6 +9,7 @@ public class Health : NetworkBehaviour
 	[SerializeField] private float respawnDelay = 3f;
 	private Collider col;
 	private Renderer rend;
+	[HideInInspector] public bool dead = false;
 
 	private void Awake()
 	{
@@ -82,7 +84,6 @@ public class Health : NetworkBehaviour
 
 		if (rb != null) rb.isKinematic = false;
 
-		//EnablePlayerClientRpc();
 		NotifyRespawnedServerRpc();
 	}
 
@@ -95,8 +96,10 @@ public class Health : NetworkBehaviour
 	[ClientRpc]
 	public void DisablePlayerClientRpc()
 	{
+		PlayerMovement.LocalInstance.OnDeath();
 		col.enabled = false;
 		rend.enabled = false;
+		dead = true;
 	}
 
 	[ClientRpc]
@@ -104,6 +107,7 @@ public class Health : NetworkBehaviour
 	{
 		col.enabled = true;
 		rend.enabled = true;
+		dead = false;
 	}
 
 	[ClientRpc]
