@@ -5,23 +5,20 @@ public class FragManager : NetworkBehaviour
 {
 	[Header("Frag Settings")]
 	[SerializeField] private Frag fragPrefab;
-	[SerializeField] private float maxThrowDist = 10f;
 	[SerializeField] private GameObject markerPrefab;
-	private GameObject markerInstance;
-
+	[SerializeField] private float maxThrowDist = 10f;
 	[SerializeField] private float fragCooldownLength = 2f;
-	private float fragCooldownTime;
-
 	[SerializeField] private int maxFrags = 3;
-	private int currentFragCount;
 
+	private GameObject markerInstance;
+	private float fragCooldownTime;
+	private int currentFragCount;
 	private bool holdingFrag;
 	private Vector3 hitPoint;
 
 	public override void OnNetworkSpawn()
 	{
-		if (!IsOwner)
-			enabled = false;
+		if (!IsOwner) enabled = false;
 	}
 
 	private void Start()
@@ -29,13 +26,12 @@ public class FragManager : NetworkBehaviour
 		GameStarter.OnGameStart += Init;
 	}
 
-	public void Init()
+	private void Init()
 	{
 		if (!IsOwner) return;
 
 		markerInstance = Instantiate(markerPrefab);
 		markerInstance.SetActive(false);
-
 		RefillGrenades();
 	}
 
@@ -84,10 +80,7 @@ public class FragManager : NetworkBehaviour
 		currentFragCount--;
 		fragCooldownTime = fragCooldownLength;
 
-		// Spawn predicted frag locally for instant movement
 		SpawnPredictedFrag(hitPoint);
-
-		// Tell server to spawn authoritative frag for everyone
 		ThrowFragServerRpc(hitPoint);
 
 		return true;
@@ -98,14 +91,16 @@ public class FragManager : NetworkBehaviour
 		Frag predicted = Instantiate(fragPrefab, transform.position, transform.rotation);
 		predicted.endPos = target;
 		predicted.parent = gameObject;
+		predicted.parentNetObj = GetComponent<NetworkObject>();
 	}
 
-	[ServerRpc]
+	[ServerRpc(RequireOwnership = false)]
 	private void ThrowFragServerRpc(Vector3 target, ServerRpcParams rpcParams = default)
 	{
 		Frag spawned = Instantiate(fragPrefab, transform.position, transform.rotation);
 		spawned.endPos = target;
 		spawned.parent = gameObject;
+		spawned.parentNetObj = GetComponent<NetworkObject>();
 		spawned.GetComponent<NetworkObject>().Spawn(true);
 	}
 

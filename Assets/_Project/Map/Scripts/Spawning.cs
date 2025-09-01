@@ -19,6 +19,11 @@ public class Spawning : NetworkBehaviour
 
 	private void Awake()
 	{
+		if (!IsServer)
+		{
+			enabled = false;
+		}
+
 		if (Instance != null && Instance != this)
 		{
 			Destroy(gameObject);
