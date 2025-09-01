@@ -6,7 +6,6 @@ public class GameStarter : MonoBehaviour
 {
     private void Start()
     {
-        Debug.Log("STARTING NEW GAME SCENE");
         OnGameStart?.Invoke();
     }
 

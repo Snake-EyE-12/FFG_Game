@@ -142,7 +142,6 @@ public class FingerGun : NetworkBehaviour
 		{
 			if (hit.collider.TryGetComponent(out Health health))
 			{
-				Debug.Log("hit player");
 				health.HitPlayer();
 			}
 		}

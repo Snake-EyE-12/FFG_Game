@@ -43,7 +43,6 @@ public class Health : NetworkBehaviour
 		{
 			if (IsServer)
 			{
-				Debug.Log("HIT IS SERVER");
 				DisablePlayerClientRpc();
 
 				StartCoroutine(RespawnRoutine());

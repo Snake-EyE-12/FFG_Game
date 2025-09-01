@@ -27,11 +27,9 @@ public class Obstacle : NetworkBehaviour
 	[ServerRpc(RequireOwnership = false)]
 	public void DestroyServerRpc()
 	{
-		Debug.Log("DestroyServerRpc");
 		if (isDestroyed.Value) return;
 
 		isDestroyed.Value = true; // updates clients
-		Debug.Log("is destroyed="+isDestroyed.Value);
 		StartCoroutine(RespawnTimer());
 	}
 
