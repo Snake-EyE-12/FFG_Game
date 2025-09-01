@@ -59,11 +59,11 @@ public class GameCharacterController : NetworkBehaviour
 
     private void SpawnSelf(ulong clientId)
     {
-        dummy = new GameCharacterBuilder(gameCharacterPrefab)
-            .WithInitialization(this)
-            .WithPosition(Spawning.GetSpawnPoint().position)
-            .Build();
-        dummy.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);
+        //dummy = new GameCharacterBuilder(gameCharacterPrefab)
+        //    .WithInitialization(this)
+        //    .WithPosition(Spawning.GetSpawnPoint().position)
+        //    .Build();
+        //dummy.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);
     }
 }
 

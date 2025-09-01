@@ -10,7 +10,9 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerMovement : NetworkBehaviour
 {
-    public enum MoveState
+	public static PlayerMovement LocalInstance;
+
+	public enum MoveState
     {
         IDLE,
         AIMING,
@@ -22,9 +24,6 @@ public class PlayerMovement : NetworkBehaviour
     public MoveState currentMoveState;
     public MoveState lastMoveState;
 
-
-
-    public Transform referencePlane;
 	public Transform colliderT;
     [SerializeField,Tooltip("How fast player moves normally")] private float runSpeed;
     [SerializeField,Tooltip("How fast player moves while crouched")] private float crouchWalkSpeed;
@@ -36,27 +35,24 @@ public class PlayerMovement : NetworkBehaviour
 
 	private float slideTimer;
 	private Vector2 slideDir;
-
-    [SerializeField] TMP_Text text;
-
     private void Start()
     {
         GameStarter.OnGameStart += Reset; //Problem
     }
+	private void Reset()
+	{
+		Spawning.Instance.RequestSpawnPointServerRpc();
+	}
+	public void OnReceivedSpawnPoint(Vector3 spawnPos)
+	{
+		Debug.Log("Recieved");
+		transform.position = spawnPos;
+	}
 
-    private void Reset()
+	private void Awake()
     {
-        text = FindFirstObjectByType<TMP_Text>();
-        text.text = "Reset1";
-        transform.position = Spawning.GetSpawnPoint().position;
-        text.text = "Reset2";
-        referencePlane = Spawning.spawnPlane;
-        text.text = "Reset3";
-    }
+		rb = GetComponent<Rigidbody>();
 
-    private void Awake()
-    {
-        rb = GetComponent<Rigidbody>();
     }
 
     private void FixedUpdate()
@@ -81,6 +77,10 @@ public class PlayerMovement : NetworkBehaviour
 		{
 			// Prevent remote players from reading input on this instance
 			enabled = false;
+		}
+		else
+		{
+			LocalInstance = this;
 		}
 	}
 
@@ -172,7 +172,7 @@ public class PlayerMovement : NetworkBehaviour
 
 	public void MoveRb(float speed, Vector2 dir)
 	{
-		rb.linearVelocity = (referencePlane.right * dir.x * speed) + (referencePlane.forward * dir.y * speed);
+		rb.linearVelocity = (Vector3.right * dir.x * speed) + (Vector3.forward * dir.y * speed);
 	}
 
 
@@ -237,7 +237,7 @@ public class PlayerMovement : NetworkBehaviour
 											colliderT.localScale.y * 0.5f, 
 											colliderT.localScale.z);
 		colliderT.localPosition = new Vector3(colliderT.localPosition.x, 
-											colliderT.localPosition.y - 1, 
+											colliderT.localPosition.y - 0.5f, 
 											colliderT.localPosition.z);
 	}
 
@@ -247,7 +247,7 @@ public class PlayerMovement : NetworkBehaviour
 									colliderT.localScale.y * 2f,
 									colliderT.localScale.z);
 		colliderT.localPosition = new Vector3(colliderT.localPosition.x,
-											colliderT.localPosition.y + 1,
+											colliderT.localPosition.y + 0.5f,
 											colliderT.localPosition.z);
 	}
 

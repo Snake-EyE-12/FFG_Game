@@ -127,15 +127,20 @@ public class FingerGun : NetworkBehaviour
 	{
 		if (!aiming || !gunLoaded) return;
 
+		Vector3 origin = transform.position + Vector3.up * 1.5f;
+
 		Vector3 shootDir = Quaternion.AngleAxis(
 			Random.Range(-currentAimAngle / 2f, currentAimAngle / 2f),
 			Vector3.up) * transform.forward;
 
-		Ray shootRay = new Ray(transform.position, shootDir);
+		Ray shootRay = new Ray(origin, shootDir);
 		if (Physics.Raycast(shootRay, out RaycastHit hit, aimDist, shootLayerMask))
 		{
 			if (hit.collider.TryGetComponent(out Health health))
+			{
+				Debug.Log("hit player");
 				health.HitPlayer();
+			}
 		}
 
 		gunLoaded = false;
