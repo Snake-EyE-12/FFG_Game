@@ -98,7 +98,7 @@ public class Health : NetworkBehaviour
 	{
 		PlayerMovement.LocalInstance.OnDeath();
 		col.enabled = false;
-		rend.enabled = false;
+		//rend.enabled = false;
 		dead = true;
 	}
 
@@ -106,7 +106,7 @@ public class Health : NetworkBehaviour
 	public void EnablePlayerClientRpc()
 	{
 		col.enabled = true;
-		rend.enabled = true;
+		//rend.enabled = true;
 		dead = false;
 	}
 

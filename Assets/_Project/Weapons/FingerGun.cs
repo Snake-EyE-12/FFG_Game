@@ -1,3 +1,4 @@
+using NaughtyAttributes;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -11,6 +12,17 @@ public class FingerGun : NetworkBehaviour
 	[SerializeField] private float aimDist = 10f;
 	[SerializeField] private float aimAnglePinchSpeed = 5f;
 	[SerializeField] private float aimStartAngle = 30f;
+
+	[Header("Reloading")]
+	[SerializeField] private float reloadLength;
+	[SerializeField, MinMaxSlider(0, 1)] private Vector2 perfectReloadPosRange;
+	[SerializeField] private float perfectReloadLength;
+	private float perfectReloadStartTime;
+	private float reloadTimer;
+	private bool isReloading;
+	private bool attemptedPerfectReload;
+
+	private Transform topOfHead;
 
 	private bool aiming = false;
 	private bool gunLoaded = true;
@@ -27,6 +39,14 @@ public class FingerGun : NetworkBehaviour
 		0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 	private NetworkVariable<Vector3> netAimDir = new NetworkVariable<Vector3>(
 	Vector3.zero, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+
+	private void Start()
+	{
+		if(topOfHead == null)
+		{
+			topOfHead = transform.GetChild(0).GetChild(0);
+		}
+	}
 
 	private void Update()
 	{
@@ -47,6 +67,15 @@ public class FingerGun : NetworkBehaviour
 			aimLine.SetPosition(0, origin);
 			aimLine.SetPosition(1, origin);
 			aimLine.SetPosition(2, origin);
+		}
+
+		if (isReloading)
+		{
+			reloadTimer += Time.deltaTime;
+			if (reloadTimer >= reloadLength)
+			{
+				Reload();
+			}
 		}
 	}
 
@@ -123,12 +152,42 @@ public class FingerGun : NetworkBehaviour
 		aimLine.SetPosition(2, origin);
 	}
 
-	public void StartReload() => Reload();
+	public void StartReload()
+	{
+		reloadTimer = 0;
+		isReloading = true;
 
-	private void Reload() => gunLoaded = true;
+
+		perfectReloadStartTime = Random.Range(reloadLength * perfectReloadPosRange.x, reloadLength * perfectReloadPosRange.y);
+
+	}
+
+	private void Reload()
+	{
+		gunLoaded = true;
+		isReloading = false;
+		attemptedPerfectReload = false;
+	}
+
+	private void TryPerfectReload()
+	{
+		if (attemptedPerfectReload) return;
+
+		if (reloadTimer >= perfectReloadStartTime && reloadTimer <= perfectReloadStartTime - perfectReloadLength)
+		{
+			Reload();
+		}
+
+		attemptedPerfectReload = true;
+	}
 
 	public void Shoot()
 	{
+		if (isReloading)
+		{
+			TryPerfectReload();
+		}
+
 		if (!aiming || !gunLoaded) return;
 
 		Vector3 origin = transform.position + Vector3.up * 1.5f;
