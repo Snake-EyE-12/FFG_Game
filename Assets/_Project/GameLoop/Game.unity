@@ -328,6 +328,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3054214715282085418, guid: c7a01560b85aec94bb26c7543a2c4a92, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3054214715282085418, guid: c7a01560b85aec94bb26c7543a2c4a92, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3054214715282085418, guid: c7a01560b85aec94bb26c7543a2c4a92, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3054214715282085418, guid: c7a01560b85aec94bb26c7543a2c4a92, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6546720087367817477, guid: c7a01560b85aec94bb26c7543a2c4a92, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6546720087367817477, guid: c7a01560b85aec94bb26c7543a2c4a92, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6546720087367817477, guid: c7a01560b85aec94bb26c7543a2c4a92, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6546720087367817477, guid: c7a01560b85aec94bb26c7543a2c4a92, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7536603080687813845, guid: c7a01560b85aec94bb26c7543a2c4a92, type: 3}
       propertyPath: m_Name
       value: PauseCanvas
@@ -1462,5 +1494,5 @@ SceneRoots:
   - {fileID: 1875495011}
   - {fileID: 1157383425}
   - {fileID: 381119463}
-  - {fileID: 778044713}
   - {fileID: 347061822}
+  - {fileID: 778044713}

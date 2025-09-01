@@ -1,10 +1,10 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PauseControl : MonoBehaviour
 {
-    [SerializeField] private RectTransform _pausePanel;
     [SerializeField] private RectTransform pauseMenuTarget;
     private Vector3 pauseMenuPosition;
     private bool paused = false;
@@ -23,6 +23,7 @@ public class PauseControl : MonoBehaviour
 
     public void Menu()
     {
+        NetworkManager.Singleton.DisconnectClient(NetworkManager.ServerClientId);
         menuSceneChanger.ChangeScene();
     }
 
@@ -30,7 +31,7 @@ public class PauseControl : MonoBehaviour
     {
         // Called Via Esc
         paused = true;
-        pauseMenuTarget.anchoredPosition = _pausePanel.anchoredPosition;
+        pauseMenuTarget.anchoredPosition = Vector3.zero;
     }
 
     private void Update()
