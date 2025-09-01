@@ -2,6 +2,7 @@ using NaughtyAttributes;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class FingerGun : NetworkBehaviour
 {
@@ -21,6 +22,9 @@ public class FingerGun : NetworkBehaviour
 	private float reloadTimer;
 	private bool isReloading;
 	private bool attemptedPerfectReload;
+	[SerializeField] private Slider reloadSlider;
+	[SerializeField] private Slider perfectReloadSlider;
+	[SerializeField] private Image reloadSliderBackground;
 
 	private Transform topOfHead;
 
@@ -72,6 +76,7 @@ public class FingerGun : NetworkBehaviour
 		if (isReloading)
 		{
 			reloadTimer += Time.deltaTime;
+			reloadSlider.value = reloadTimer / reloadLength;
 			if (reloadTimer >= reloadLength)
 			{
 				Reload();
@@ -128,6 +133,11 @@ public class FingerGun : NetworkBehaviour
 
 	public bool Aim()
 	{
+		if (isReloading)
+		{
+			StopAim();
+			return false;
+		}
 		currentAimAngle = aimStartAngle;
 		aiming = gunLoaded;
 
@@ -154,20 +164,27 @@ public class FingerGun : NetworkBehaviour
 
 	public void StartReload()
 	{
+		reloadSlider.gameObject.SetActive(true);
 		reloadTimer = 0;
 		isReloading = true;
+		reloadSlider.value = 0;
+		reloadSliderBackground.color = Color.white;
 
+		float PRVal = Random.Range(perfectReloadPosRange.x, perfectReloadPosRange.y);
 
-		perfectReloadStartTime = Random.Range(reloadLength * perfectReloadPosRange.x, reloadLength * perfectReloadPosRange.y);
+		perfectReloadStartTime = Random.Range(reloadLength * PRVal, reloadLength * PRVal);
+
+		perfectReloadSlider.value = PRVal;
 
 	}
 
 	private void Reload()
 	{
+		reloadSlider.gameObject.SetActive(false);
 		gunLoaded = true;
 		isReloading = false;
 		attemptedPerfectReload = false;
-	}
+    }
 
 	private void TryPerfectReload()
 	{
@@ -176,9 +193,12 @@ public class FingerGun : NetworkBehaviour
 		if (reloadTimer >= perfectReloadStartTime && reloadTimer <= perfectReloadStartTime + perfectReloadLength)
 		{
 			Reload();
+			return;
 		}
 
-		attemptedPerfectReload = true;
+        reloadSliderBackground.color = Color.red;
+
+        attemptedPerfectReload = true;
 	}
 
 	public void Shoot()

@@ -61,10 +61,10 @@ public class WeaponActionManager : NetworkBehaviour
 					playerMovement.ChangeState(PlayerMovement.MoveState.IDLE);
 				}
 			}
-			else if (aiming)
-			{
+			//else if (aiming)
+			//{
 				fingerGun.Shoot();
-			}
+			//}
 		}
 	}
 
