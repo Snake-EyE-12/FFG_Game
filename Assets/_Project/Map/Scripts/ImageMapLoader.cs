@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class ImageMapLoader : MonoBehaviour
@@ -79,8 +80,11 @@ public class ImageMapLoader : MonoBehaviour
         
         if(IsCloseColor(pixel, cyan)) // SPAWNPOINT
         {
-            GameObject spawnBlock = Instantiate(spawnpointPrefab, basePos, Quaternion.identity, transform);
-            Spawning.spawnPoints.Add(spawnBlock.transform.GetChild(0));
+			GameObject spawnBlock = Instantiate(spawnpointPrefab, basePos, Quaternion.identity, transform);
+			//NetworkObject spawnBlock = Instantiate(spawnpointPrefab, basePos, Quaternion.identity, transform).GetComponent<NetworkObject>();
+			//spawnBlock.Spawn();
+
+			Spawning.spawnPoints.Add(spawnBlock.transform.GetChild(0));
         }
 
         int stackHeight = -1;
@@ -93,15 +97,21 @@ public class ImageMapLoader : MonoBehaviour
         if (stackHeight == -1) return;
 
 
-        // always spawn ground
-        Instantiate(groundPrefab, basePos, Quaternion.identity, transform);
+		// always spawn ground
+		Instantiate(groundPrefab, basePos, Quaternion.identity, transform);
+		//NetworkObject ground = Instantiate(groundPrefab, basePos, Quaternion.identity, transform).GetComponent<NetworkObject>();
+		//ground.Spawn();
 
-        // layers of cover (1 or 2)
-        for (int i = 1; i < stackHeight; i++)
+		// ONLY COVER IS NETWORKED RIGHT NOW
+		// layers of cover (1 or 2)
+		if (!NetworkManager.Singleton.IsServer) return; // only server will spawn cover
+		for (int i = 1; i < stackHeight; i++)
         {
             Vector3 pos = basePos + new Vector3(0, i * blockSize, 0);
-            Instantiate(coverPrefab, pos, Quaternion.identity, transform);
-        }
+            //Instantiate(coverPrefab, pos, Quaternion.identity, transform);
+			NetworkObject cover = Instantiate(coverPrefab, pos, Quaternion.identity, transform).GetComponent<NetworkObject>();
+			cover.Spawn();
+		}
     }
 
     bool IsCloseColor(Color a, Color b)

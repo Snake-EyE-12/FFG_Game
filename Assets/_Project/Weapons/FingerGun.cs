@@ -1,142 +1,148 @@
+using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class FingerGun : MonoBehaviour
+public class FingerGun : NetworkBehaviour
 {
-    [SerializeField] private Camera cam;
+	[Header("Gun Settings")]
+	[SerializeField] private LineRenderer aimLine;
+	[SerializeField] private LayerMask shootLayerMask;
+	[SerializeField] private LayerMask wallMask;
+	[SerializeField] private float aimDist = 10f;
+	[SerializeField] private float aimAnglePinchSpeed = 5f;
+	[SerializeField] private float aimStartAngle = 30f;
 
-    private bool aiming;
-    private bool gunLoaded;
+	private bool aiming = false;
+	private bool gunLoaded = true;
 
-    private float aimAngle;
-    private Vector3 aimDir;
+	private float currentAimAngle;
+	private Vector3 aimDir;
 
-    private Vector3 leftAimPos;
-    private Vector3 rightAimPos;
+	private Vector3 leftAimPos;
+	private Vector3 rightAimPos;
 
-    [SerializeField] private LineRenderer aimLine;
+	private NetworkVariable<bool> netAiming = new NetworkVariable<bool>(
+		false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+	private NetworkVariable<float> netAimAngle = new NetworkVariable<float>(
+		0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
-    [SerializeField] private LayerMask shootLayerMask;
-    [SerializeField] private LayerMask wallMask;
+	private void Update()
+	{
+		bool drawAiming = IsOwner ? aiming : netAiming.Value;
+		float angle = IsOwner ? currentAimAngle : netAimAngle.Value;
 
-    [SerializeField] private float aimAnglePinchSpeed;
-    private float aimTimer;
-    [SerializeField] private float aimDist;
-    [SerializeField] private float aimStartAngle;
-    private float currentAimAngle;
+		if (drawAiming)
+		{
+			if (IsOwner)
+				UpdateAimAngleAndDir();
 
-    private void Awake()
-    {
-        gunLoaded = true;
-    }
+			DrawVLine(angle);
+		}
+		else
+		{
+			Vector3 origin = transform.position + Vector3.up * 1.5f;
+			aimLine.SetPosition(0, origin);
+			aimLine.SetPosition(1, origin);
+			aimLine.SetPosition(2, origin);
+		}
+	}
 
-    private void Update()
-    {
+	private void UpdateAimAngleAndDir()
+	{
+		Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+		Plane groundPlane = new Plane(Vector3.up, transform.position);
 
-        if (aiming)
-        {
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-            Plane groundPlane = new Plane(Vector3.up, Vector3.one);
+		if (groundPlane.Raycast(ray, out float distance))
+		{
+			Vector3 hitPoint = ray.GetPoint(distance);
+			Vector3 direction = hitPoint - transform.position;
+			direction.y = 0f;
 
-            if (groundPlane.Raycast(ray, out float mouse))
-            {
-                Vector3 hitPoint = ray.GetPoint(mouse);
+			if (direction != Vector3.zero)
+			{
+				aimDir = direction;
+				transform.rotation = Quaternion.LookRotation(direction);
+			}
+		}
 
-                Vector3 direction = hitPoint - transform.position;
-                direction.y = 0; // remove vertical tilt if for purely horizontal aim
+		if (currentAimAngle > 0.5f)
+			currentAimAngle = Mathf.Lerp(currentAimAngle, 0.01f, aimAnglePinchSpeed * Time.deltaTime);
 
-                aimDir = direction;
+		netAiming.Value = aiming;
+		netAimAngle.Value = currentAimAngle;
+	}
 
-                if (direction != Vector3.zero)
-                {
-                    Quaternion targetRotation = Quaternion.LookRotation(direction);
-                    transform.rotation = targetRotation;
-                    //transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, aimRotationSpeed * Time.deltaTime);
-                }
-            }
+	private void DrawVLine(float angle)
+	{
+		Vector3 origin = transform.position + Vector3.up * 1.5f;
 
-            Vector3 leftDir = Quaternion.AngleAxis(-currentAimAngle / 2, Vector3.up) * transform.forward;
-            Vector3 rightDir = Quaternion.AngleAxis(currentAimAngle / 2, Vector3.up) * transform.forward;
+		Vector3 leftDir = Quaternion.AngleAxis(-angle / 2f, Vector3.up) * transform.forward;
+		Vector3 rightDir = Quaternion.AngleAxis(angle / 2f, Vector3.up) * transform.forward;
 
-            Ray leftRay = new Ray(new Vector3(transform.position.x, 1, transform.position.z), leftDir);
-            Ray rightRay = new Ray(new Vector3(transform.position.x, 1, transform.position.z), rightDir);
+		// Cast rays to walls, fallback to full distance
+		leftAimPos = Physics.Raycast(origin, leftDir, out RaycastHit leftHit, aimDist, wallMask)
+			? leftHit.point
+			: origin + leftDir * aimDist;
 
-            if (Physics.Raycast(leftRay, out RaycastHit leftHit, aimDist, wallMask))
-            {
-                leftAimPos = leftHit.point;
-            }
-            else
-            {
-                leftAimPos = leftDir * aimDist;
-            }
-            if (Physics.Raycast(rightRay, out RaycastHit rightHit, aimDist, wallMask))
-            {
-                rightAimPos = rightHit.point;
-            }
-            else
-            {
-                rightAimPos = rightDir * aimDist;
-            }
+		rightAimPos = Physics.Raycast(origin, rightDir, out RaycastHit rightHit, aimDist, wallMask)
+			? rightHit.point
+			: origin + rightDir * aimDist;
 
-            aimLine.SetPosition(0, leftAimPos);
-            aimLine.SetPosition(2, rightAimPos);
+		aimLine.SetPosition(0, leftAimPos);
+		aimLine.SetPosition(1, origin);
+		aimLine.SetPosition(2, rightAimPos);
+	}
 
-            if (currentAimAngle > .5f)
-                currentAimAngle = Mathf.Lerp(currentAimAngle, .1f, aimAnglePinchSpeed * Time.deltaTime);
-        }
-        else
-        {
-            aimLine.SetPosition(0, new Vector3(transform.position.x, 1, transform.position.z));
-            aimLine.SetPosition(2, new Vector3(transform.position.x, 1, transform.position.z));
-        }
-        aimLine.SetPosition(1, transform.position);
-    }
+	public bool Aim()
+	{
+		currentAimAngle = aimStartAngle;
+		aiming = gunLoaded;
 
-    public bool Aim()
-    {
-        currentAimAngle = aimStartAngle;
-        aimTimer = aimAnglePinchSpeed;
-        aiming = gunLoaded;
+		if (IsOwner)
+		{
+			netAiming.Value = aiming;
+			netAimAngle.Value = currentAimAngle;
+		}
 
-        return aiming;
-    }
+		return aiming;
+	}
 
-    public void StopAim()
-    {
-        aimLine.SetPosition(0, new Vector3(transform.position.x, 1, transform.position.z));
-        aimLine.SetPosition(2, new Vector3(transform.position.x, 1, transform.position.z));
-        aiming = false;
-    }
+	public void StopAim()
+	{
+		aiming = false;
+		if (IsOwner)
+			netAiming.Value = false;
 
-    public void StartReload()
-    {
-        Reload();
-    }
+		Vector3 origin = transform.position + Vector3.up * 1.5f;
+		aimLine.SetPosition(0, origin);
+		aimLine.SetPosition(1, origin);
+		aimLine.SetPosition(2, origin);
+	}
 
-    private void Reload()
-    {
-        gunLoaded = true;
-    }
+	public void StartReload() => Reload();
 
-    public void Shoot()
-    {
-        if (aiming && gunLoaded)
-        {
-            Vector3 ShootDir = Quaternion.AngleAxis(Random.Range(-currentAimAngle / 2, currentAimAngle / 2), Vector3.up) * transform.forward;
-            Ray shootRay = new Ray(transform.position, ShootDir);
+	private void Reload() => gunLoaded = true;
 
-            if (Physics.Raycast(shootRay, out RaycastHit hit, aimDist, shootLayerMask))
-            {
-                if (hit.collider.gameObject.TryGetComponent(out Health health))
-                {
-                    health.HitPlayer();
-                }
-            }
+	public void Shoot()
+	{
+		if (!aiming || !gunLoaded) return;
 
-            gunLoaded = false;
-            aimTimer = aimAnglePinchSpeed;
-            currentAimAngle = aimStartAngle;
-            StartReload();
+		Vector3 shootDir = Quaternion.AngleAxis(
+			Random.Range(-currentAimAngle / 2f, currentAimAngle / 2f),
+			Vector3.up) * transform.forward;
 
-        }
-    }
+		Ray shootRay = new Ray(transform.position, shootDir);
+		if (Physics.Raycast(shootRay, out RaycastHit hit, aimDist, shootLayerMask))
+		{
+			if (hit.collider.TryGetComponent(out Health health))
+				health.HitPlayer();
+		}
+
+		gunLoaded = false;
+		currentAimAngle = aimStartAngle;
+		StartReload();
+
+		if (IsOwner)
+			netAimAngle.Value = currentAimAngle;
+	}
 }

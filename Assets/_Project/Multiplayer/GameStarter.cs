@@ -11,4 +11,5 @@ public class GameStarter : MonoBehaviour
     }
 
     public static Action OnGameStart;
+    public static Action OnGameEnd; // needs to be invoked somewhere
 }

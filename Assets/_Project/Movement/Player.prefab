@@ -120,9 +120,9 @@ GameObject:
   m_Component:
   - component: {fileID: 7596974246393220913}
   - component: {fileID: 6758474482697004545}
+  - component: {fileID: -1214189962734162541}
   - component: {fileID: 7721051038856528849}
   - component: {fileID: 77433037286037992}
-  - component: {fileID: -1214189962734162541}
   - component: {fileID: 8558370091555273845}
   m_Layer: 0
   m_Name: Player
@@ -174,33 +174,6 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 1
---- !u!114 &7721051038856528849
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6441006185340145739}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04f07a66262d4b44faf83a1666777118, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  referencePlane: {fileID: 0}
-  moveSpeed: 10
---- !u!114 &77433037286037992
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6441006185340145739}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd2b67e5e3c3438a840cf2c174cc43ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  movement: {fileID: 7721051038856528849}
 --- !u!114 &-1214189962734162541
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -226,6 +199,41 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &7721051038856528849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6441006185340145739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04f07a66262d4b44faf83a1666777118, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  currentMoveState: 0
+  lastMoveState: 0
+  referencePlane: {fileID: 0}
+  colliderT: {fileID: 0}
+  runSpeed: 0
+  crouchWalkSpeed: 0
+  slideSpeed: 0
+  slideDuration: 0
+  text: {fileID: 0}
+--- !u!114 &77433037286037992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6441006185340145739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd2b67e5e3c3438a840cf2c174cc43ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movement: {fileID: 7721051038856528849}
 --- !u!114 &8558370091555273845
 MonoBehaviour:
   m_ObjectHideFlags: 0

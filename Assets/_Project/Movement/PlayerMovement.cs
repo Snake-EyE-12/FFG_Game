@@ -31,7 +31,7 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField,Tooltip("How fast player moves while sliding")] private float slideSpeed;
     [SerializeField,Tooltip("How long the player slides for")] private float slideDuration;
     
-    private Vector2 moveDir;
+    public Vector2 moveDir;
     private Rigidbody rb;
 
 	private float slideTimer;
@@ -61,19 +61,18 @@ public class PlayerMovement : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        if (SceneManager.GetActiveScene().name.Equals("Game")) // Not good
-        {
-			FixedUpdateState();
-        }
+		if (!GameManager.Instance.inGame) return;
+		
+		FixedUpdateState();
+        
     }
 
 	private void Update()
 	{
-		if (SceneManager.GetActiveScene().name.Equals("Game")) // Not good
-		{
+		if (!GameManager.Instance.inGame) return;
 
-			UpdateState();
-		}
+		UpdateState();
+		
 	}
 
 	public override void OnNetworkSpawn()
@@ -140,6 +139,12 @@ public class PlayerMovement : NetworkBehaviour
 					// start crouch walking
 					ChangeState(MoveState.CROUCH_WALKING);
 					break;
+				case MoveState.SLIDING:
+					if(moveDir != slideDir)
+					{
+						SlideToCrouchWalk();
+					}
+					break;
 				default:
 					// all other cases are ignored with current functionality, add more cases if need be
 					break;
@@ -203,6 +208,11 @@ public class PlayerMovement : NetworkBehaviour
 		ChangeState(MoveState.CROUCHING);
 	}
 
+	public void SlideToCrouchWalk()
+	{
+		ChangeState(MoveState.CROUCH_WALKING);
+	}
+
 	public void CrouchWalkToRun()
 	{
 		ChangeState(MoveState.RUNNING);
@@ -213,6 +223,12 @@ public class PlayerMovement : NetworkBehaviour
 	{
 		ChangeState(MoveState.IDLE);
 		RaiseHeight();
+	}
+
+	public void CrouchToAim()
+	{
+		RaiseHeight();
+		ChangeState(MoveState.AIMING);
 	}
 
 	private void LowerHeight()
@@ -244,6 +260,27 @@ public class PlayerMovement : NetworkBehaviour
 		else
 		{
 			ChangeState(MoveState.CROUCHING);
+		}
+	}
+
+	public bool TryAim()
+	{
+		switch(currentMoveState)
+		{
+			case MoveState.AIMING:
+				return false;
+			case MoveState.CROUCHING:
+				CrouchToAim();
+				return true;
+			case MoveState.CROUCH_WALKING:
+				CrouchToAim();
+				return true;
+			case MoveState.SLIDING:
+				return false;
+			default:
+				ChangeState(MoveState.AIMING);
+				return true;
+
 		}
 	}
 
