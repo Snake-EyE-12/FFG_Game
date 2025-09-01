@@ -88,41 +88,23 @@ public class Frag : NetworkBehaviour
 		Collider[] hits = Physics.OverlapSphere(pos, explosionRadius, hitMask);
 		foreach (var hit in hits)
 		{
-			if(hit.gameObject.CompareTag("Obstacle"))
+			// Always resolve NetworkObject (self or parent)
+			NetworkObject netObj = hit.GetComponentInParent<NetworkObject>();
+			if (netObj == null) continue;
+
+			if (netObj.NetworkObjectId == parentId) continue;
+
+			if (hitObjects.Contains(netObj)) continue;
+			hitObjects.Add(netObj);
+
+			if (netObj.GetComponentInChildren<Health>() is Health health)
 			{
-				if (hit.TryGetComponent(out NetworkObject netObj))
-				{
-					if (netObj.NetworkObjectId == parentId) continue;
-
-					if (!hitObjects.Contains(netObj))
-					{
-						hitObjects.Add(netObj);
-
-						if (hit.TryGetComponent(out Obstacle obs))
-						{
-							obs.DestroyServerRpc();
-						}
-					}
-				}
+				health.HitPlayer();
 			}
-			else if (hit.gameObject.CompareTag("Player"))
+			else if (netObj.TryGetComponent(out Obstacle obs))
 			{
-				if (hit.transform.parent.TryGetComponent(out NetworkObject netObj))
-				{
-					if (netObj.NetworkObjectId == parentId) continue;
-
-					if (!hitObjects.Contains(netObj))
-					{
-						hitObjects.Add(netObj);
-
-						if (hit.TryGetComponent(out Health health))
-						{
-							health.HitPlayer();
-						}
-					}
-				}
+				obs.DestroyServerRpc();
 			}
-
 		}
 
 		SpawnExplosionClientRpc(pos);
@@ -130,6 +112,7 @@ public class Frag : NetworkBehaviour
 		if (TryGetComponent<NetworkObject>(out var fragNetObj) && fragNetObj.IsSpawned)
 			fragNetObj.Despawn();
 	}
+
 
 	[ClientRpc]
 	private void SpawnExplosionClientRpc(Vector3 pos)
