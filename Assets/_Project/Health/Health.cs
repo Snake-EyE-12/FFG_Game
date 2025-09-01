@@ -83,6 +83,13 @@ public class Health : NetworkBehaviour
 
 		if (rb != null) rb.isKinematic = false;
 
+		//EnablePlayerClientRpc();
+		NotifyRespawnedServerRpc();
+	}
+
+	[ServerRpc(RequireOwnership = false)]
+	private void NotifyRespawnedServerRpc(ServerRpcParams rpcParams = default)
+	{
 		EnablePlayerClientRpc();
 	}
 
