@@ -25,18 +25,21 @@ public class FingerGun : NetworkBehaviour
 		false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 	private NetworkVariable<float> netAimAngle = new NetworkVariable<float>(
 		0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+	private NetworkVariable<Vector3> netAimDir = new NetworkVariable<Vector3>(
+	Vector3.zero, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
 	private void Update()
 	{
 		bool drawAiming = IsOwner ? aiming : netAiming.Value;
 		float angle = IsOwner ? currentAimAngle : netAimAngle.Value;
+		Vector3 dir = IsOwner ? aimDir : netAimDir.Value;
 
 		if (drawAiming)
 		{
 			if (IsOwner)
 				UpdateAimAngleAndDir();
 
-			DrawVLine(angle);
+			DrawVLine(dir, angle);
 		}
 		else
 		{
@@ -70,14 +73,15 @@ public class FingerGun : NetworkBehaviour
 
 		netAiming.Value = aiming;
 		netAimAngle.Value = currentAimAngle;
+		netAimDir.Value = aimDir;
 	}
 
-	private void DrawVLine(float angle)
+	private void DrawVLine(Vector3 baseDir, float angle)
 	{
 		Vector3 origin = transform.position + Vector3.up * 1.5f;
 
-		Vector3 leftDir = Quaternion.AngleAxis(-angle / 2f, Vector3.up) * transform.forward;
-		Vector3 rightDir = Quaternion.AngleAxis(angle / 2f, Vector3.up) * transform.forward;
+		Vector3 leftDir = Quaternion.AngleAxis(-angle / 2f, Vector3.up) * baseDir;
+		Vector3 rightDir = Quaternion.AngleAxis(angle / 2f, Vector3.up) * baseDir;
 
 		// Cast rays to walls, fallback to full distance
 		leftAimPos = Physics.Raycast(origin, leftDir, out RaycastHit leftHit, aimDist, wallMask)
