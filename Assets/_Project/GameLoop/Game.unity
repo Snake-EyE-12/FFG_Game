@@ -311,7 +311,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  spawnPoints: []
 --- !u!1 &604712593
 GameObject:
   m_ObjectHideFlags: 0

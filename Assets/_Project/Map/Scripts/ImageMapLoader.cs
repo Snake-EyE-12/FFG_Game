@@ -76,10 +76,7 @@ public class ImageMapLoader : MonoBehaviour
 			GameObject spawnBlock = Instantiate(spawnpointPrefab, basePos, Quaternion.identity, transform);
 			Transform spawnTransform = spawnBlock.transform.GetChild(0);
 
-			if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
-			{
-				Spawning.RegisterSpawnPoint(spawnTransform);
-			}
+			Instantiate(spawnpointPrefab, basePos, Quaternion.identity, transform);
 		}
 
 		int stackHeight = -1;

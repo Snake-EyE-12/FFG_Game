@@ -6,9 +6,8 @@ public class Spawning : NetworkBehaviour
 {
 	public static Spawning Instance;
 
-	private static List<Transform> spawnPoints = new List<Transform>();
-
-	private Queue<Transform> spawnQueue = new Queue<Transform>();
+	private static List<Vector3> spawnPositions = new List<Vector3>();
+	private Queue<Vector3> spawnQueue = new Queue<Vector3>();
 
 	private void Awake()
 	{
@@ -20,25 +19,49 @@ public class Spawning : NetworkBehaviour
 		Instance = this;
 	}
 
-	public static void RegisterSpawnPoint(Transform t)
+	// Register a spawn point (server-only)
+	public static void RegisterSpawnPoint(Vector3 pos)
 	{
-		if (!spawnPoints.Contains(t))
+		if (!spawnPositions.Contains(pos))
 		{
-			spawnPoints.Add(t);
+			spawnPositions.Add(pos);
+			Debug.Log($"[Spawning] Registered spawn point at {pos}");
 		}
 	}
 
-	private Transform GetNextSpawnPoint()
+	// Unregister a spawn point (server-only)
+	public static void UnregisterSpawnPoint(Vector3 pos)
+	{
+		if (spawnPositions.Remove(pos))
+		{
+			Debug.Log($"[Spawning] Unregistered spawn point at {pos}");
+		}
+
+		RebuildQueue();
+	}
+
+	private static void RebuildQueue()
+	{
+		if (Instance == null) return;
+
+		Instance.spawnQueue.Clear();
+		var shuffled = new List<Vector3>(spawnPositions);
+		Shuffle(shuffled);
+		foreach (var sp in shuffled)
+			Instance.spawnQueue.Enqueue(sp);
+	}
+
+	private Vector3? GetNextSpawnPoint()
 	{
 		if (spawnQueue.Count == 0)
 		{
-			if (spawnPoints.Count == 0)
+			if (spawnPositions.Count == 0)
 			{
-				Debug.LogWarning("No spawn points registered!");
+				Debug.LogWarning("[Spawning] No spawn points registered!");
 				return null;
 			}
 
-			List<Transform> shuffled = new List<Transform>(spawnPoints);
+			var shuffled = new List<Vector3>(spawnPositions);
 			Shuffle(shuffled);
 
 			foreach (var sp in shuffled)
@@ -51,17 +74,23 @@ public class Spawning : NetworkBehaviour
 	[ServerRpc(RequireOwnership = false)]
 	public void RequestSpawnPointServerRpc(ServerRpcParams rpcParams = default)
 	{
-		Transform nextSpawn = GetNextSpawnPoint();
-		if (nextSpawn == null) return;
+		Vector3? next = GetNextSpawnPoint();
+		if (next == null) return;
 
-		RespawnClientRpc(nextSpawn.position, rpcParams.Receive.SenderClientId);
+		var clientRpcParams = new ClientRpcParams
+		{
+			Send = new ClientRpcSendParams
+			{
+				TargetClientIds = new[] { rpcParams.Receive.SenderClientId }
+			}
+		};
+
+		RespawnClientRpc(next.Value, clientRpcParams);
 	}
 
 	[ClientRpc]
-	private void RespawnClientRpc(Vector3 spawnPos, ulong targetClientId)
+	private void RespawnClientRpc(Vector3 spawnPos, ClientRpcParams clientRpcParams = default)
 	{
-		if (NetworkManager.Singleton.LocalClientId != targetClientId) return;
-
 		if (PlayerMovement.LocalInstance != null)
 		{
 			PlayerMovement.LocalInstance.OnReceivedSpawnPoint(spawnPos);
@@ -82,7 +111,7 @@ public class Spawning : NetworkBehaviour
 
 	private static void Shuffle<T>(IList<T> list)
 	{
-		System.Random rng = new System.Random();
+		var rng = new System.Random();
 		int n = list.Count;
 		while (n > 1)
 		{
