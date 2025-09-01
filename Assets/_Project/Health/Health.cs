@@ -96,6 +96,7 @@ public class Health : NetworkBehaviour
 	[ClientRpc]
 	public void DisablePlayerClientRpc()
 	{
+		PlayerMovement.LocalInstance.OnDeath();
 		col.enabled = false;
 		rend.enabled = false;
 		dead = true;

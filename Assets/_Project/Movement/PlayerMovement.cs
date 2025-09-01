@@ -38,6 +38,8 @@ public class PlayerMovement : NetworkBehaviour
 
 	public Health health;
 
+	private bool fullHeight = true;
+
 	private void Awake()
     {
 		rb = GetComponent<Rigidbody>();
@@ -94,7 +96,7 @@ public class PlayerMovement : NetworkBehaviour
 	#region INPUT ACTIONS
 	public void Move(InputAction.CallbackContext context)
     {
-		if (!IsOwner) return;
+		if (!IsOwner || health.dead) return;
 		
 		moveDir = context.ReadValue<Vector2>();
 		OnNewMoveInput();
@@ -103,7 +105,7 @@ public class PlayerMovement : NetworkBehaviour
 
 	public void Crouch(InputAction.CallbackContext context)
 	{
-		if (!IsOwner) return;
+		if (!IsOwner || health.dead) return;
 		
 		if(context.performed)
 		{
@@ -240,22 +242,26 @@ public class PlayerMovement : NetworkBehaviour
 
 	private void LowerHeight()
 	{
+		if (!fullHeight) return;
 		colliderT.localScale = new Vector3(colliderT.localScale.x, 
 											colliderT.localScale.y * 0.5f, 
 											colliderT.localScale.z);
 		colliderT.localPosition = new Vector3(colliderT.localPosition.x, 
 											colliderT.localPosition.y - 0.5f, 
 											colliderT.localPosition.z);
+		fullHeight = false;
 	}
 
 	private void RaiseHeight()
 	{
+		if (fullHeight) return;
 		colliderT.localScale = new Vector3(colliderT.localScale.x,
 									colliderT.localScale.y * 2f,
 									colliderT.localScale.z);
 		colliderT.localPosition = new Vector3(colliderT.localPosition.x,
 											colliderT.localPosition.y + 0.5f,
 											colliderT.localPosition.z);
+		fullHeight = true;
 	}
 
 	private void EndSlide()
@@ -394,5 +400,11 @@ public class PlayerMovement : NetworkBehaviour
 				}
 				break;
 		}
+	}
+
+	public void OnDeath()
+	{
+		ChangeState(MoveState.IDLE);
+		RaiseHeight();
 	}
 }
