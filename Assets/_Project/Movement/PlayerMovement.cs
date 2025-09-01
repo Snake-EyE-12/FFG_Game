@@ -36,6 +36,8 @@ public class PlayerMovement : NetworkBehaviour
 	private float slideTimer;
 	private Vector2 slideDir;
 
+	public Health health;
+
 	private void Awake()
     {
 		rb = GetComponent<Rigidbody>();
@@ -49,7 +51,7 @@ public class PlayerMovement : NetworkBehaviour
 
     private void FixedUpdate()
     {
-		if (!GameManager.Instance.inGame) return;
+		if (!GameManager.Instance.inGame || health.dead) return;
 		
 		FixedUpdateState();
         
@@ -57,7 +59,7 @@ public class PlayerMovement : NetworkBehaviour
 
 	private void Update()
 	{
-		if (!GameManager.Instance.inGame) return;
+		if (!GameManager.Instance.inGame || health.dead) return;
 
 		UpdateState();
 		
