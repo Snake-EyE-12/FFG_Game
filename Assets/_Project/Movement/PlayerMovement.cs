@@ -37,6 +37,7 @@ public class PlayerMovement : NetworkBehaviour
 	private Vector2 slideDir;
 
 	public Health health;
+	public PlayerAnimationController animationController;
 
 	private bool fullHeight = true;
 
@@ -48,6 +49,7 @@ public class PlayerMovement : NetworkBehaviour
 
 	private void OnGameStart()
 	{
+		ChangeState(MoveState.IDLE);
 		RequestSpawnFromServer();
 	}
 
@@ -306,7 +308,7 @@ public class PlayerMovement : NetworkBehaviour
         lastMoveState = currentMoveState;
         currentMoveState = newState;
 
-        OnEnterstate();
+        OnEnterState();
     }
 
     private void OnExitState()
@@ -328,15 +330,18 @@ public class PlayerMovement : NetworkBehaviour
 		}
 	}
 
-	private void OnEnterstate()
+	private void OnEnterState()
     {
 		switch (currentMoveState)
 		{
 			case MoveState.IDLE:
+				animationController.ChangeState(PlayerAnimationController.AnimationState.STANDING_FRONT);
 				break;
 			case MoveState.AIMING:
+				animationController.ChangeState(PlayerAnimationController.AnimationState.STANDING_AIMING);
 				break;
 			case MoveState.RUNNING:
+				animationController.ChangeState(PlayerAnimationController.AnimationState.RUNNING_FRONT);
 				break;
 			case MoveState.CROUCHING:
 				break;

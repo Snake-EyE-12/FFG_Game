@@ -4,6 +4,7 @@ using UnityEngine;
 public class PlayerAnimationController : MonoBehaviour
 {
 	[SerializeField] private NetworkSprite nSprite;
+	[SerializeField, Tooltip("Time spent on each frame of an animation")] private float animationTime = 0.3f;
 
 	/**
 	 * Indexes for NetworkSprite availableSprites
@@ -71,6 +72,10 @@ public class PlayerAnimationController : MonoBehaviour
 	}
 	private AnimationState currentState;
 
+	private float animationTimer;
+	private int secondaryIndex; // second index of current two-frame animation
+
+
 	public void ChangeState(AnimationState newState)
 	{
 		currentState = newState;
@@ -94,12 +99,18 @@ public class PlayerAnimationController : MonoBehaviour
 				break;
 			case AnimationState.RUNNING_BACK:
 				nSprite.ChangeSpriteServerRpc(10); // cycle 10-11
+				secondaryIndex = 11;
+				animationTimer = animationTime;
 				break;
 			case AnimationState.RUNNING_FRONT:
 				nSprite.ChangeSpriteServerRpc(12); // cycle 12-13
+				secondaryIndex = 13;
+				animationTimer = animationTime;
 				break;
 			case AnimationState.RUNNING_SIDE:
 				nSprite.ChangeSpriteServerRpc(14); // cycle 14-15
+				secondaryIndex = 15;
+				animationTimer = animationTime;
 				break;
 			case AnimationState.CROUCHING_FRONT:
 				nSprite.ChangeSpriteServerRpc(16);
@@ -112,12 +123,18 @@ public class PlayerAnimationController : MonoBehaviour
 				break;
 			case AnimationState.CROUCH_WALKING_FRONT:
 				nSprite.ChangeSpriteServerRpc(19); // cycle 19-20
+				secondaryIndex = 20;
+				animationTimer = animationTime;
 				break;
 			case AnimationState.CROUCH_WALKING_SIDE:
 				nSprite.ChangeSpriteServerRpc(21); // cycle 21-22
+				secondaryIndex = 22;
+				animationTimer = animationTime;
 				break;
 			case AnimationState.CROUCH_WALKING_BACK:
 				nSprite.ChangeSpriteServerRpc(23); // cycle 23-24
+				secondaryIndex = 24;
+				animationTimer = animationTime;
 				break;
 			case AnimationState.SLIDING_UP:
 				nSprite.ChangeSpriteServerRpc(25);
@@ -145,6 +162,39 @@ public class PlayerAnimationController : MonoBehaviour
 				break;
 			case AnimationState.THROWING_NADE_DOWN:
 				nSprite.ChangeSpriteServerRpc(33);
+				break;
+		}
+	}
+
+	private void Update()
+	{
+		UpdateState();
+	}
+
+	private void UpdateState()
+	{
+		switch (currentState)
+		{
+			case AnimationState.RUNNING_BACK:
+			case AnimationState.RUNNING_FRONT:
+			case AnimationState.RUNNING_SIDE:
+			case AnimationState.CROUCH_WALKING_FRONT:
+			case AnimationState.CROUCH_WALKING_SIDE:
+			case AnimationState.CROUCH_WALKING_BACK:
+				if(animationTimer > 0)
+				{
+					animationTimer -= Time.deltaTime;
+				}
+				else
+				{
+					animationTimer = animationTime;
+
+					int index = secondaryIndex;
+					if(nSprite.SpriteIndex == secondaryIndex) index -= 1;
+					nSprite.ChangeSpriteServerRpc(index);
+				}
+				break;
+			default:
 				break;
 		}
 	}
