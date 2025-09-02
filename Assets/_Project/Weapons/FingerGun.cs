@@ -179,7 +179,7 @@ public class FingerGun : NetworkBehaviour
 
 		float PRVal = Random.Range(perfectReloadPosRange.x, perfectReloadPosRange.y);
 
-		perfectReloadStartTime = Random.Range(reloadLength * PRVal, reloadLength * PRVal);
+		perfectReloadStartTime = reloadLength * PRVal;
 
 		perfectReloadSlider.value = PRVal;
 
