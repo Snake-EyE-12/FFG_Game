@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using NaughtyAttributes;
 using Unity.Multiplayer.Center.NetcodeForGameObjectsExample.DistributedAuthority;
 using Unity.Netcode;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class ItemSpawner : MonoBehaviour
 {
@@ -84,7 +86,7 @@ public class ActiveSpawnLocationInUse
 public abstract class PickUp : NetworkBehaviour
 {
     private ItemSpawner itemSpawner;
-    [SerializeField] private NetworkObject networkObject;
+    [SerializeField] protected NetworkObject networkObject;
     public void OnSpawnItem(ItemSpawner spawner)
     {
         itemSpawner = spawner;
@@ -96,7 +98,16 @@ public abstract class PickUp : NetworkBehaviour
     {
         itemSpawner.ReleaseItem(networkObject);
         OnPickUp();
+        networkObject.Despawn();
     }
     protected abstract void OnPickUp();
     protected abstract void OnSpawn();
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.TryGetComponent<Health>(out Health h))
+        {
+            h.RanIntoPickup(this);
+        }
+    }
 }
