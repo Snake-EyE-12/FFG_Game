@@ -374,6 +374,7 @@ public class PlayerMovement : NetworkBehaviour
 				SetAnimCrouchWalkDir();
 				break;
 			case MoveState.SLIDING:
+				SetAnimSlideDir();
 				slideTimer = Time.time;
 				slideDir = moveDir;
 				break;
@@ -507,6 +508,22 @@ public class PlayerMovement : NetworkBehaviour
 				break;
 			case MoveDirection.DOWN:
 				animationController.ChangeState(PlayerAnimationController.AnimationState.STANDING_FRONT);
+				break;
+		}
+	}
+
+	private void SetAnimSlideDir()
+	{
+		switch (GetMoveDirection())
+		{
+			case MoveDirection.UP:
+				animationController.ChangeState(PlayerAnimationController.AnimationState.SLIDING_UP);
+				break;
+			case MoveDirection.SIDE:
+				animationController.ChangeState(PlayerAnimationController.AnimationState.SLIDING_SIDE);
+				break;
+			case MoveDirection.DOWN:
+				animationController.ChangeState(PlayerAnimationController.AnimationState.SLIDING_DOWN);
 				break;
 		}
 	}
