@@ -10,6 +10,7 @@ public class ImageMapLoader : MonoBehaviour
 	[Header("Prefabs")]
 	public GameObject groundPrefab;
 	public GameObject coverPrefab;
+	public GameObject coverPrefab2;
 	public GameObject spawnpointPrefab;
 
 	[Header("Block Settings")]
@@ -96,8 +97,10 @@ public class ImageMapLoader : MonoBehaviour
 		if (!NetworkManager.Singleton.IsServer) return;
 		for (int i = 1; i < stackHeight; i++)
 		{
+			GameObject prefab = coverPrefab;
+			if (i == 2) prefab = coverPrefab2;
 			Vector3 pos = basePos + new Vector3(0, i * blockSize, 0);
-			NetworkObject cover = Instantiate(coverPrefab, pos, Quaternion.identity, transform).GetComponent<NetworkObject>();
+			NetworkObject cover = Instantiate(prefab, pos, Quaternion.identity, transform).GetComponent<NetworkObject>();
 			cover.Spawn();
 		}
 	}

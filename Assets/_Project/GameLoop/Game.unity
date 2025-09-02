@@ -459,7 +459,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &604712594
 Transform:
   m_ObjectHideFlags: 0
@@ -771,7 +771,7 @@ MonoBehaviour:
     CustomLookAtTarget: 0
   Lens:
     FieldOfView: 60
-    OrthographicSize: 20
+    OrthographicSize: 8
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -798,7 +798,7 @@ Transform:
   m_GameObject: {fileID: 903158115}
   serializedVersion: 2
   m_LocalRotation: {x: 0.34118694, y: 0.065549634, z: -0.023858111, w: 0.9374036}
-  m_LocalPosition: {x: -9.4, y: 24.76, z: -28.8}
+  m_LocalPosition: {x: -4.74, y: 24.76, z: -28.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -822,7 +822,7 @@ MonoBehaviour:
     AngularDampingMode: 0
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
-  FollowOffset: {x: -9.4, y: 24.76, z: -28.8}
+  FollowOffset: {x: -4.74, y: 24.76, z: -28.8}
 --- !u!1 &1157383422
 GameObject:
   m_ObjectHideFlags: 0
@@ -918,7 +918,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1160234426
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -964,6 +964,7 @@ GameObject:
   - component: {fileID: 1358158123}
   - component: {fileID: 1358158122}
   - component: {fileID: 1358158126}
+  - component: {fileID: 1358158127}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1058,7 +1059,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 20
+  orthographic size: 8
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1083,7 +1084,7 @@ Transform:
   m_GameObject: {fileID: 1358158121}
   serializedVersion: 2
   m_LocalRotation: {x: 0.34118694, y: 0.065549634, z: -0.023858111, w: 0.9374036}
-  m_LocalPosition: {x: -9.4, y: 24.76, z: -28.8}
+  m_LocalPosition: {x: -4.74, y: 24.76, z: -28.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1121,6 +1122,21 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   CustomBlends: {fileID: 0}
+--- !u!114 &1358158127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1358158121}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bba8468f67b971d40bb50973e4918667, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backgroundMaterial: {fileID: 2100000, guid: 9b6ea365d79569d45813a5abacd4c993, type: 2}
+  size: 100
+  parallax: 0
 --- !u!1 &1769254129
 GameObject:
   m_ObjectHideFlags: 0

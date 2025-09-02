@@ -7,6 +7,7 @@ public class Obstacle : NetworkBehaviour
 	[SerializeField] private float respawnTime;
 	[SerializeField] private MeshRenderer mr;
 	[SerializeField] private Collider coll;
+	private Vector3 fullScale;
 
 	private NetworkVariable<bool> isDestroyed = new NetworkVariable<bool>(
 		false,
@@ -16,6 +17,8 @@ public class Obstacle : NetworkBehaviour
 	private void Awake()
 	{
 		isDestroyed.OnValueChanged += OnStateChanged;
+
+		fullScale = transform.localScale;
 	}
 
 	private void OnDestroy()
@@ -56,7 +59,7 @@ public class Obstacle : NetworkBehaviour
 		{
 			mr.enabled = true;
 			coll.enabled = true;
-			StartCoroutine(ScaleOverTime(0.5f, Vector3.zero, Vector3.one));
+			StartCoroutine(ScaleOverTime(0.5f, Vector3.zero, fullScale));
 		}
 	}
 

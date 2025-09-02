@@ -49,6 +49,7 @@ MonoBehaviour:
   mapIndex: 0
   groundPrefab: {fileID: 2658801779676687736, guid: 1c686c55fe7909649a0fa344b3a662fe, type: 3}
   coverPrefab: {fileID: 3069774858843123830, guid: 8bd9056971ed7034c97f42973851e038, type: 3}
+  coverPrefab2: {fileID: 3069774858843123830, guid: a6ded3e6dc8c89c4e9c4f3e5106186a4, type: 3}
   spawnpointPrefab: {fileID: 2658801779676687736, guid: 7469cbb7303d6c040a9e72977438016e, type: 3}
   blockSize: 1
   colorTolerance: 0.01
