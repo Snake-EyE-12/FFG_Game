@@ -115,4 +115,10 @@ public class Health : NetworkBehaviour
 	{
 		// play animation / UI effect here
 	}
+
+	public void RanIntoPickup(PickUp pickUp)
+	{
+		pickUp.PickUpItem();
+		hasFingerGun = true;
+	}
 }
