@@ -21,6 +21,7 @@ public class FingerGun : NetworkBehaviour
 	private float perfectReloadStartTime;
 	private float reloadTimer;
 	private bool isReloading;
+	public bool IsReloading { get { return isReloading; } }
 	private bool attemptedPerfectReload;
 	[SerializeField] private Slider reloadSlider;
 	[SerializeField] private Slider perfectReloadSlider;

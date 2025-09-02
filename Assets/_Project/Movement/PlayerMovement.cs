@@ -29,6 +29,8 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField,Tooltip("How fast player moves while crouched")] private float crouchWalkSpeed;
     [SerializeField,Tooltip("How fast player moves while sliding")] private float slideSpeed;
     [SerializeField,Tooltip("How long the player slides for")] private float slideDuration;
+	[SerializeField] private bool cancelSlideWithAim = true;
+	[SerializeField] private bool cancelSlideWithMove = true;
     
     public Vector2 moveDir;
     private Rigidbody rb;
@@ -38,6 +40,7 @@ public class PlayerMovement : NetworkBehaviour
 
 	public Health health;
 	public PlayerAnimationController animationController;
+	public FingerGun gun;
 
 	private bool fullHeight = true;
 
@@ -151,7 +154,7 @@ public class PlayerMovement : NetworkBehaviour
 					ChangeState(MoveState.CROUCH_WALKING);
 					break;
 				case MoveState.SLIDING:
-					if(moveDir != slideDir)
+					if(moveDir != slideDir && cancelSlideWithMove)
 					{
 						SlideToCrouchWalk();
 					}
@@ -265,6 +268,12 @@ public class PlayerMovement : NetworkBehaviour
 		ChangeState(MoveState.AIMING);
 	}
 
+	public void SlideToAim()
+	{
+		RaiseHeight();
+		ChangeState(MoveState.AIMING);
+	}
+
 	private void LowerHeight()
 	{
 		if (!fullHeight) return;
@@ -303,6 +312,7 @@ public class PlayerMovement : NetworkBehaviour
 
 	public bool TryAim()
 	{
+		if (gun.IsReloading) return false;
 		switch(currentMoveState)
 		{
 			case MoveState.AIMING:
@@ -314,7 +324,12 @@ public class PlayerMovement : NetworkBehaviour
 				CrouchToAim();
 				return true;
 			case MoveState.SLIDING:
-				return false;
+				if (cancelSlideWithAim)
+				{
+					SlideToAim();
+					return true;
+				}
+				else return false;
 			default:
 				ChangeState(MoveState.AIMING);
 				return true;
