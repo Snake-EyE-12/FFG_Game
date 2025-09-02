@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Unity.Netcode;
+﻿using Unity.Netcode;
 using UnityEngine;
 
 public class ImageMapLoader : MonoBehaviour
@@ -89,6 +88,11 @@ public class ImageMapLoader : MonoBehaviour
 
 		Instantiate(groundPrefab, basePos, Quaternion.identity, transform);
 
+		if (stackHeight == 1)
+		{
+			ItemSpawner.AddSpawnLocation(basePos + (Vector3.up * blockSize));
+		}
+
 		if (!NetworkManager.Singleton.IsServer) return;
 		for (int i = 1; i < stackHeight; i++)
 		{
@@ -97,7 +101,6 @@ public class ImageMapLoader : MonoBehaviour
 			cover.Spawn();
 		}
 	}
-
 
 	bool IsCloseColor(Color a, Color b)
 	{
