@@ -9,7 +9,13 @@ public class NetworkSprite : NetworkBehaviour
 	private NetworkVariable<int> spriteIndex = new NetworkVariable<int>(
 		0,
 		NetworkVariableReadPermission.Everyone,
-		NetworkVariableWritePermission.Owner);
+		NetworkVariableWritePermission.Server);
+
+	public int SpriteIndex => spriteIndex.Value;
+	public Sprite CurrentSprite =>
+		spriteIndex.Value >= 0 && spriteIndex.Value < availableSprites.Length
+			? availableSprites[spriteIndex.Value]
+			: null;
 
 	private void Awake()
 	{

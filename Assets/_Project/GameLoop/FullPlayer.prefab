@@ -535,6 +535,7 @@ MonoBehaviour:
   slideDuration: 0.5
   moveDir: {x: 0, y: 0}
   health: {fileID: 5020874054130216124}
+  animationController: {fileID: 3515908606548066905}
 --- !u!114 &8666476971072264896
 MonoBehaviour:
   m_ObjectHideFlags: 0
