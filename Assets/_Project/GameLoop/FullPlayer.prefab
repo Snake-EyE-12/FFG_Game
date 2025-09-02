@@ -533,9 +533,12 @@ MonoBehaviour:
   crouchWalkSpeed: 3
   slideSpeed: 10
   slideDuration: 0.5
+  cancelSlideWithAim: 1
+  cancelSlideWithMove: 1
   moveDir: {x: 0, y: 0}
   health: {fileID: 5020874054130216124}
   animationController: {fileID: 3515908606548066905}
+  gun: {fileID: 215988946921233948}
 --- !u!114 &8666476971072264896
 MonoBehaviour:
   m_ObjectHideFlags: 0
