@@ -1379,6 +1379,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nSprite: {fileID: 3861026739458580567}
+  animationTime: 0.3
 --- !u!1 &7468427306810344182
 GameObject:
   m_ObjectHideFlags: 0

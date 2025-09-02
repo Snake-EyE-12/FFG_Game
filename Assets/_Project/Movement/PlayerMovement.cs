@@ -160,24 +160,41 @@ public class PlayerMovement : NetworkBehaviour
 					// all other cases are ignored with current functionality, add more cases if need be
 					break;
 			}
+
+			if (currentMoveState is not (MoveState.AIMING or MoveState.SLIDING))
+			{
+				UpdateFlip();
+			}
 		}
 		else
 		{
 			switch (currentMoveState)
 			{
 				case MoveState.RUNNING:
-					// start running
+					// stop running
 					ChangeState(MoveState.IDLE);
 					break;
 
 				case MoveState.CROUCH_WALKING:
-					// start crouch walking
+					// stop crouch walking
 					ChangeState(MoveState.CROUCHING);
 					break;
 				default:
 					// all other cases are ignored with current functionality, add more cases if need be
 					break;
 			}
+		}
+	}
+
+	private void UpdateFlip()
+	{
+		if (moveDir.x > 0)
+		{
+			animationController.FlipX(false);
+		}
+		else if (moveDir.x < 0)
+		{
+			animationController.FlipX(true);
 		}
 	}
 
@@ -341,11 +358,13 @@ public class PlayerMovement : NetworkBehaviour
 				animationController.ChangeState(PlayerAnimationController.AnimationState.STANDING_AIMING);
 				break;
 			case MoveState.RUNNING:
+				UpdateFlip();
 				animationController.ChangeState(PlayerAnimationController.AnimationState.RUNNING_FRONT);
 				break;
 			case MoveState.CROUCHING:
 				break;
 			case MoveState.CROUCH_WALKING:
+				UpdateFlip();
 				break;
 			case MoveState.SLIDING:
 				slideTimer = Time.time;

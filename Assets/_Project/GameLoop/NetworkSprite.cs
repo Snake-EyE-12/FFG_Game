@@ -11,11 +11,20 @@ public class NetworkSprite : NetworkBehaviour
 		NetworkVariableReadPermission.Everyone,
 		NetworkVariableWritePermission.Server);
 
+
+	private NetworkVariable<bool> flipX = new NetworkVariable<bool>(
+		false,
+		NetworkVariableReadPermission.Everyone,
+		NetworkVariableWritePermission.Server);
+
 	public int SpriteIndex => spriteIndex.Value;
 	public Sprite CurrentSprite =>
 		spriteIndex.Value >= 0 && spriteIndex.Value < availableSprites.Length
 			? availableSprites[spriteIndex.Value]
 			: null;
+
+	public bool FlipX => flipX.Value;
+
 
 	private void Awake()
 	{
@@ -26,12 +35,16 @@ public class NetworkSprite : NetworkBehaviour
 	public override void OnNetworkSpawn()
 	{
 		spriteIndex.OnValueChanged += OnSpriteChanged;
+		flipX.OnValueChanged += OnFlipChanged;
+
 		OnSpriteChanged(0, spriteIndex.Value);
+		OnFlipChanged(false, flipX.Value);
 	}
 
 	private void OnDestroy()
 	{
 		spriteIndex.OnValueChanged -= OnSpriteChanged;
+		flipX.OnValueChanged -= OnFlipChanged;
 	}
 
 	private void OnSpriteChanged(int oldValue, int newValue)
@@ -42,6 +55,12 @@ public class NetworkSprite : NetworkBehaviour
 		}
 	}
 
+
+	private void OnFlipChanged(bool oldValue, bool newValue)
+	{
+		spriteRenderer.flipX = newValue;
+	}
+
 	[ServerRpc]
 	public void ChangeSpriteServerRpc(int newIndex)
 	{
@@ -49,5 +68,11 @@ public class NetworkSprite : NetworkBehaviour
 		{
 			spriteIndex.Value = newIndex;
 		}
+	}
+
+	[ServerRpc]
+	public void SetFlipXServerRpc(bool newFlipX)
+	{
+		if(newFlipX != flipX.Value) flipX.Value = newFlipX;
 	}
 }

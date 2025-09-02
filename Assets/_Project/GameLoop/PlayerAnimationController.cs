@@ -198,4 +198,9 @@ public class PlayerAnimationController : MonoBehaviour
 				break;
 		}
 	}
+
+	public void FlipX(bool newFlip)
+	{
+		nSprite.SetFlipXServerRpc(newFlip);
+	}
 }
