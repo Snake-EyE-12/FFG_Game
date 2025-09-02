@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1131891215287089702
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8198959839323939601}
+  - component: {fileID: 846890154036808207}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8198959839323939601
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1131891215287089702}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &846890154036808207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1131891215287089702}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f4b99894e1395c4fb4c6edab0c543c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dontDestroyOnLoad: 1
+  audioObjectPrefab: {fileID: 6023734235680870443, guid: a7196328f3305914c9bdb3bf834546e2, type: 3}
+  Footstep: {fileID: 8300000, guid: cc921c35c3b3b9846b326c798597c853, type: 3}
+  FragExplosion: {fileID: 8300000, guid: c55552981c0d5d447865ec64125f9d74, type: 3}
+  FragThrow: {fileID: 8300000, guid: 2ca110426842eb240981e261f2794fba, type: 3}
+  Hit: {fileID: 8300000, guid: d18f3eefbe5c8be4eaf4b9ef60513b95, type: 3}
+  MenuBack: {fileID: 8300000, guid: c5964a8fdd8822c4e9141e895ea0bacf, type: 3}
+  MenuHover: {fileID: 8300000, guid: c63fc58cceed6294984c136531f04384, type: 3}
+  MenuSelect: {fileID: 8300000, guid: ccc48775d31984a408a48c1cfb9cc27e, type: 3}
+  PlayerJoin: {fileID: 8300000, guid: 032c371a65b61bb449ed8b96c69c3d68, type: 3}
+  Shoot: {fileID: 8300000, guid: a55d8a77c3b8a3e469da38fb52ed9f45, type: 3}
+  Slide: {fileID: 8300000, guid: 9ad505b27431ab34bbe0155c514c5d6d, type: 3}
+  SneakFootstep: {fileID: 8300000, guid: 9f74984adf92d124bb1fa87c9330f089, type: 3}
