@@ -78,6 +78,7 @@ public class PlayerAnimationController : MonoBehaviour
 
 	public void ChangeState(AnimationState newState)
 	{
+		if(currentState == newState) return;
 		currentState = newState;
 		OnEnterState();
 	}
@@ -93,7 +94,7 @@ public class PlayerAnimationController : MonoBehaviour
 				nSprite.ChangeSpriteServerRpc(1);
 				break;
 			case AnimationState.STANDING_AIMING:
-
+				FlipX(false);
 				// update sprite depending on aim direction. will need process state
 
 				break;
@@ -202,5 +203,55 @@ public class PlayerAnimationController : MonoBehaviour
 	public void FlipX(bool newFlip)
 	{
 		nSprite.SetFlipXServerRpc(newFlip);
+	}
+
+	private float currentAimAngle;
+	public void UpdateAimAngle(float angle)
+	{
+		currentAimAngle = angle;
+
+		int sectorCount = 8;
+		float sectorSize = 360f / sectorCount;
+		float offset = 30f;
+
+		float normalized = (angle + 360f + offset) % 360f;
+
+		int sectorIndex = Mathf.FloorToInt(normalized / sectorSize);
+
+		switch (sectorIndex)
+		{
+			case 0: 
+				//Debug.Log("Right");
+				nSprite.ChangeSpriteServerRpc(4);
+				break;
+			case 1:
+				//Debug.Log("Up-Right"); 
+				nSprite.ChangeSpriteServerRpc(3);
+				break;
+			case 2:
+				//Debug.Log("Up"); 
+				nSprite.ChangeSpriteServerRpc(2);
+				break;
+			case 3: 
+				//Debug.Log("Up-Left"); 
+				nSprite.ChangeSpriteServerRpc(9);
+				break;
+			case 4:
+				//Debug.Log("Left");
+				nSprite.ChangeSpriteServerRpc(8);
+				break;
+			case 5: 
+				//Debug.Log("Down-Left"); 
+				nSprite.ChangeSpriteServerRpc(7);
+				break;
+			case 6:
+				//Debug.Log("Down"); 
+				nSprite.ChangeSpriteServerRpc(6);
+				break;
+			case 7:
+				//Debug.Log("Down-Right"); 
+				nSprite.ChangeSpriteServerRpc(5);
+				break;
+		}
 	}
 }

@@ -156,6 +156,12 @@ public class PlayerMovement : NetworkBehaviour
 						SlideToCrouchWalk();
 					}
 					break;
+				case MoveState.RUNNING:
+					SetAnimRunDir();
+					break;
+				case MoveState.CROUCH_WALKING:
+					SetAnimCrouchWalkDir();
+					break;
 				default:
 					// all other cases are ignored with current functionality, add more cases if need be
 					break;
@@ -320,7 +326,7 @@ public class PlayerMovement : NetworkBehaviour
     {
         if(currentMoveState == newState) return;
 
-        OnExitState();
+        //OnExitState();
 
         lastMoveState = currentMoveState;
         currentMoveState = newState;
@@ -328,43 +334,44 @@ public class PlayerMovement : NetworkBehaviour
         OnEnterState();
     }
 
-    private void OnExitState()
-    {
-		switch (currentMoveState)
-		{
-			case MoveState.IDLE:
-				break;
-			case MoveState.AIMING:
-				break;
-			case MoveState.RUNNING:
-				break;
-			case MoveState.CROUCHING:
-				break;
-			case MoveState.CROUCH_WALKING:
-				break;
-			case MoveState.SLIDING:
-				break;
-		}
-	}
+ //   private void OnExitState()
+ //   {
+	//	switch (currentMoveState)
+	//	{
+	//		case MoveState.IDLE:
+	//			break;
+	//		case MoveState.AIMING:
+	//			break;
+	//		case MoveState.RUNNING:
+	//			break;
+	//		case MoveState.CROUCHING:
+	//			break;
+	//		case MoveState.CROUCH_WALKING:
+	//			break;
+	//		case MoveState.SLIDING:
+	//			break;
+	//	}
+	//}
 
 	private void OnEnterState()
     {
 		switch (currentMoveState)
 		{
 			case MoveState.IDLE:
-				animationController.ChangeState(PlayerAnimationController.AnimationState.STANDING_FRONT);
+				SetAnimStandDir();
 				break;
 			case MoveState.AIMING:
 				animationController.ChangeState(PlayerAnimationController.AnimationState.STANDING_AIMING);
 				break;
 			case MoveState.RUNNING:
 				UpdateFlip();
-				animationController.ChangeState(PlayerAnimationController.AnimationState.RUNNING_FRONT);
+				SetAnimRunDir();
 				break;
 			case MoveState.CROUCHING:
 				break;
 			case MoveState.CROUCH_WALKING:
 				UpdateFlip();
+				SetAnimCrouchWalkDir();
 				break;
 			case MoveState.SLIDING:
 				slideTimer = Time.time;
@@ -380,6 +387,7 @@ public class PlayerMovement : NetworkBehaviour
 			case MoveState.IDLE:
 				break;
 			case MoveState.AIMING:
+				animationController.UpdateAimAngle(currentAimAngle);
 				break;
 			case MoveState.RUNNING:
 				break;
@@ -430,5 +438,76 @@ public class PlayerMovement : NetworkBehaviour
 	{
 		ChangeState(MoveState.IDLE);
 		RaiseHeight();
+	}
+
+	private float currentAimAngle;
+	public void UpdateAimAngle(float angle)
+	{
+		currentAimAngle = angle;
+	}
+
+
+	private enum MoveDirection
+	{
+		UP,
+		SIDE,
+		DOWN
+	}
+	private MoveDirection recentDir;
+
+	private MoveDirection GetMoveDirection()
+	{
+		if (moveDir.y > 0)  recentDir = MoveDirection.UP;
+		else if (moveDir.y < 0) recentDir = MoveDirection.DOWN;
+		else recentDir = MoveDirection.SIDE;
+		return recentDir;
+	}
+
+	private void SetAnimCrouchWalkDir()
+	{
+		switch (GetMoveDirection())
+		{
+			case MoveDirection.UP:
+				animationController.ChangeState(PlayerAnimationController.AnimationState.CROUCH_WALKING_BACK);
+				break;
+			case MoveDirection.SIDE:
+				animationController.ChangeState(PlayerAnimationController.AnimationState.CROUCH_WALKING_SIDE);
+				break;
+			case MoveDirection.DOWN:
+				animationController.ChangeState(PlayerAnimationController.AnimationState.CROUCH_WALKING_FRONT);
+				break;
+		}
+	}
+
+	private void SetAnimRunDir()
+	{
+		switch (GetMoveDirection())
+		{
+			case MoveDirection.UP:
+				animationController.ChangeState(PlayerAnimationController.AnimationState.RUNNING_BACK);
+				break;
+			case MoveDirection.SIDE:
+				animationController.ChangeState(PlayerAnimationController.AnimationState.RUNNING_SIDE);
+				break;
+			case MoveDirection.DOWN:
+				animationController.ChangeState(PlayerAnimationController.AnimationState.RUNNING_FRONT);
+				break;
+		}
+	}
+
+	private void SetAnimStandDir()
+	{
+		switch (recentDir)
+		{
+			case MoveDirection.UP:
+				animationController.ChangeState(PlayerAnimationController.AnimationState.STANDING_BACK);
+				break;
+			case MoveDirection.SIDE:
+				animationController.ChangeState(PlayerAnimationController.AnimationState.STANDING_FRONT);
+				break;
+			case MoveDirection.DOWN:
+				animationController.ChangeState(PlayerAnimationController.AnimationState.STANDING_FRONT);
+				break;
+		}
 	}
 }

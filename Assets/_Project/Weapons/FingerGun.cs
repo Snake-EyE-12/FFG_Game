@@ -108,6 +108,12 @@ public class FingerGun : NetworkBehaviour
 		netAiming.Value = aiming;
 		netAimAngle.Value = currentAimAngle;
 		netAimDir.Value = aimDir;
+
+		float angleRad = Mathf.Atan2(aimDir.z, aimDir.x);
+		float angleDeg = angleRad * Mathf.Rad2Deg;
+		if (angleDeg < 0) angleDeg += 360;
+
+		PlayerMovement.LocalInstance.UpdateAimAngle(angleDeg);
 	}
 
 	private void DrawVLine(Vector3 baseDir, float angle)
