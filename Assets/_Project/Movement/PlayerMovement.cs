@@ -20,7 +20,8 @@ public class PlayerMovement : NetworkBehaviour
         RUNNING,
         CROUCHING,
 		CROUCH_WALKING,
-        SLIDING
+        SLIDING,
+		DEAD
     }
     public MoveState currentMoveState;
     public MoveState lastMoveState;
@@ -455,19 +456,25 @@ public class PlayerMovement : NetworkBehaviour
 		}
 	}
 
+
 	public void OnDeath()
 	{
-		ChangeState(MoveState.IDLE);
+		ChangeState(MoveState.DEAD);
 		RaiseHeight();
 	}
 
 	private float currentAimAngle;
 	public void UpdateAimAngle(Vector3 aimDir)
 	{
-		float angleRad = Mathf.Atan2(aimDir.z, aimDir.x);
+		currentAimAngle = GetAngleFromDir(aimDir);
+	}
+
+	public static float GetAngleFromDir(Vector3 dir)
+	{
+		float angleRad = Mathf.Atan2(dir.z, dir.x);
 		float angleDeg = angleRad * Mathf.Rad2Deg;
 		if (angleDeg < 0) angleDeg += 360;
-		currentAimAngle = angleDeg;
+		return angleDeg;
 	}
 
 
@@ -498,6 +505,7 @@ public class PlayerMovement : NetworkBehaviour
 				animationController.ChangeState(PlayerAnimationController.AnimationState.CROUCH_WALKING_SIDE);
 				break;
 			case MoveDirection.DOWN:
+			default:
 				animationController.ChangeState(PlayerAnimationController.AnimationState.CROUCH_WALKING_FRONT);
 				break;
 		}
@@ -514,6 +522,7 @@ public class PlayerMovement : NetworkBehaviour
 				animationController.ChangeState(PlayerAnimationController.AnimationState.RUNNING_SIDE);
 				break;
 			case MoveDirection.DOWN:
+			default:
 				animationController.ChangeState(PlayerAnimationController.AnimationState.RUNNING_FRONT);
 				break;
 		}
@@ -530,6 +539,7 @@ public class PlayerMovement : NetworkBehaviour
 				animationController.ChangeState(PlayerAnimationController.AnimationState.STANDING_FRONT);
 				break;
 			case MoveDirection.DOWN:
+			default:
 				animationController.ChangeState(PlayerAnimationController.AnimationState.STANDING_FRONT);
 				break;
 		}
@@ -546,8 +556,10 @@ public class PlayerMovement : NetworkBehaviour
 				animationController.ChangeState(PlayerAnimationController.AnimationState.CROUCHING_SIDE);
 				break;
 			case MoveDirection.DOWN:
+			default:
 				animationController.ChangeState(PlayerAnimationController.AnimationState.CROUCHING_FRONT);
 				break;
+
 		}
 	}
 
@@ -562,6 +574,7 @@ public class PlayerMovement : NetworkBehaviour
 				animationController.ChangeState(PlayerAnimationController.AnimationState.SLIDING_SIDE);
 				break;
 			case MoveDirection.DOWN:
+			default:
 				animationController.ChangeState(PlayerAnimationController.AnimationState.SLIDING_DOWN);
 				break;
 		}

@@ -44,6 +44,9 @@ public class PlayerAnimationController : MonoBehaviour
 	 * 31 - ThrowNade_Up
 	 * 32 - ThrowNade_Side
 	 * 33 - ThrowNade_Down
+	 * 34 - Die_Front
+	 * 35 - Die_Side
+	 * 36 - Die_Back
 	 */
 
 	public enum AnimationState
@@ -69,6 +72,9 @@ public class PlayerAnimationController : MonoBehaviour
 		THROWING_NADE_UP,
 		THROWING_NADE_SIDE,
 		THROWING_NADE_DOWN,
+		DEAD_FRONT,
+		DEAD_SIDE,
+		DEAD_BACK
 	}
 	private AnimationState currentState;
 
@@ -163,6 +169,15 @@ public class PlayerAnimationController : MonoBehaviour
 				break;
 			case AnimationState.THROWING_NADE_DOWN:
 				nSprite.ChangeSpriteServerRpc(33);
+				break;
+			case AnimationState.DEAD_FRONT:
+				nSprite.ChangeSpriteServerRpc(34);
+				break;
+			case AnimationState.DEAD_SIDE:
+				nSprite.ChangeSpriteServerRpc(35);
+				break;
+			case AnimationState.DEAD_BACK:
+				nSprite.ChangeSpriteServerRpc(36);
 				break;
 		}
 	}
@@ -262,7 +277,7 @@ public class PlayerAnimationController : MonoBehaviour
 
 		int sectorCount = 6;
 		float sectorSize = 360f / sectorCount;
-		float offset = 0f;
+		float offset = 30f;
 
 		float normalized = (angle + 360f + offset) % 360f;
 
@@ -271,28 +286,79 @@ public class PlayerAnimationController : MonoBehaviour
 		switch (sectorIndex)
 		{
 			case 0:
-				ChangeState(AnimationState.AIMING_NADE_UP);
-				FlipX(false);
+				Debug.Log("right");
+				ChangeState(AnimationState.AIMING_NADE_SIDE);
+				FlipX(true);
 				break;
 			case 1:
+				Debug.Log("up-right");
 				ChangeState(AnimationState.AIMING_NADE_UP);
 				FlipX(true);
 				break;
 			case 2:
-				ChangeState(AnimationState.AIMING_NADE_SIDE);
+				Debug.Log("up-left");
+				ChangeState(AnimationState.AIMING_NADE_UP);
 				FlipX(false);
 				break;
 			case 3:
+				Debug.Log("left");
 				ChangeState(AnimationState.AIMING_NADE_SIDE);
-				FlipX(true);
+				FlipX(false);
 				break;
 			case 4:
+				Debug.Log("down-left");
+				ChangeState(AnimationState.AIMING_NADE_DOWN);
+				FlipX(true);
+				break;
+			case 5:
+				Debug.Log("down-right");
 				ChangeState(AnimationState.AIMING_NADE_DOWN);
 				FlipX(false);
 				break;
-			case 5:
-				ChangeState(AnimationState.AIMING_NADE_DOWN);
+		}
+	}
+
+	public void DoDeathFrame(float angle)
+	{
+		int sectorCount = 6;
+		float sectorSize = 360f / sectorCount;
+		float offset = 30f;
+
+		float normalized = (angle + 360f + offset) % 360f;
+
+		int sectorIndex = Mathf.FloorToInt(normalized / sectorSize);
+
+		switch (sectorIndex)
+		{
+			case 0:
+				Debug.Log("right");
+				ChangeState(AnimationState.DEAD_SIDE);
 				FlipX(true);
+				break;
+			case 1:
+				Debug.Log("up-right");
+				ChangeState(AnimationState.DEAD_FRONT);
+				FlipX(true);
+				break;
+			case 2:
+				Debug.Log("up-left");
+				ChangeState(AnimationState.DEAD_FRONT);
+				FlipX(false);
+				break;
+			case 3:
+				Debug.Log("left");
+				ChangeState(AnimationState.DEAD_SIDE);
+				FlipX(false);
+				break;
+			case 4:
+				Debug.Log("down-left");
+				ChangeState(AnimationState.DEAD_BACK);
+				FlipX(true);
+				break;
+			case 5:
+				Debug.Log("down-right");
+				ChangeState(AnimationState.DEAD_BACK);
+				FlipX(false);
 				break;
 		}
 	}

@@ -10,6 +10,8 @@ public class Health : NetworkBehaviour
 	private Collider col;
 	private Renderer rend;
 	[HideInInspector] public bool dead = false;
+	public PlayerMovement pm;
+	public SpriteRenderer sr;
 
 	private void Awake()
 	{
@@ -17,24 +19,24 @@ public class Health : NetworkBehaviour
 		rend = GetComponent<Renderer>();
 	}
 
-	public void HitPlayer()
+	public void HitPlayer(Vector3 hitDir)
 	{
 		if (!IsServer)
 		{
-			HitPlayerServerRpc();
+			HitPlayerServerRpc(hitDir);
 			return;
 		}
 
-		HandleHit();
+		HandleHit(hitDir);
 	}
 
 	[ServerRpc(RequireOwnership = false)]
-	private void HitPlayerServerRpc(ServerRpcParams rpcParams = default)
+	private void HitPlayerServerRpc(Vector3 hitDir, ServerRpcParams rpcParams = default)
 	{
-		HandleHit();
+		HandleHit(hitDir);
 	}
 
-	private void HandleHit()
+	private void HandleHit(Vector3 hitDir)
 	{
 		if (hasFingerGun)
 		{
@@ -45,22 +47,25 @@ public class Health : NetworkBehaviour
 		{
 			if (IsServer)
 			{
-				DisablePlayerClientRpc();
-
-				StartCoroutine(RespawnRoutine());
+				Die(hitDir);
 			}
 		}
 	}
 
+	private void Die(Vector3 hitDir)
+	{
+		DisablePlayerClientRpc(hitDir);
+
+		StartCoroutine(RespawnRoutine());
+	}
+
 	private IEnumerator RespawnRoutine()
 	{
-		rend.enabled = false;
-		col.enabled = false;
-
 		Rigidbody rb = transform.parent.GetComponent<Rigidbody>();
 		if (rb != null) rb.isKinematic = true;
 
 		yield return new WaitForSeconds(respawnDelay);
+		HideSpriteClientRpc();
 
 		RequestSpawnClientRpc(OwnerClientId);
 	}
@@ -94,20 +99,31 @@ public class Health : NetworkBehaviour
 	}
 
 	[ClientRpc]
-	public void DisablePlayerClientRpc()
+	public void DisablePlayerClientRpc(Vector3 hitDir)
 	{
-		PlayerMovement.LocalInstance.OnDeath();
+		pm.OnDeath();
+		float angle = PlayerMovement.GetAngleFromDir(hitDir);
+		pm.animationController.DoDeathFrame(angle);
 		col.enabled = false;
-		//rend.enabled = false;
 		dead = true;
 	}
 
 	[ClientRpc]
 	public void EnablePlayerClientRpc()
 	{
+		StartCoroutine(EnableAfterDelay());
+	}
+
+	private IEnumerator EnableAfterDelay()
+	{
+		yield return new WaitForSeconds(0.3f);
+
+		pm.ChangeState(PlayerMovement.MoveState.IDLE);
+		yield return new WaitForSeconds(0.2f);
 		col.enabled = true;
-		//rend.enabled = true;
 		dead = false;
+
+		if (sr != null) sr.enabled = true;
 	}
 
 	[ClientRpc]
@@ -120,5 +136,19 @@ public class Health : NetworkBehaviour
 	{
 		pickUp.PickUpItem();
 		hasFingerGun = true;
+	}
+
+	[ClientRpc]
+	private void HideSpriteClientRpc()
+	{
+		if (sr != null)
+			sr.enabled = false;
+	}
+
+	[ClientRpc]
+	private void ShowSpriteClientRpc()
+	{
+		if (sr != null)
+			sr.enabled = true;
 	}
 }

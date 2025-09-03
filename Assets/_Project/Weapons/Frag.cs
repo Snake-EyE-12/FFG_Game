@@ -1,3 +1,4 @@
+using Cobra.Utilities.Extensions;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
@@ -99,7 +100,7 @@ public class Frag : NetworkBehaviour
 
 			if (netObj.GetComponentInChildren<Health>() is Health health)
 			{
-				health.HitPlayer();
+				health.HitPlayer(netObj.transform.position - pos);
 			}
 			else if (netObj.TryGetComponent(out Obstacle obs))
 			{

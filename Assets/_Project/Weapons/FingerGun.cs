@@ -225,7 +225,7 @@ public class FingerGun : NetworkBehaviour
 		{
 			if (hit.collider.TryGetComponent(out Health health))
 			{
-				health.HitPlayer();
+				health.HitPlayer(shootDir);
 			}
 		}
 
