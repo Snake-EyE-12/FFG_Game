@@ -5,6 +5,7 @@ using UnityEngine.InputSystem.Processors;
 
 public class Health : NetworkBehaviour
 {
+	public NetworkVariable<int> kills = new NetworkVariable<int>(0);
 	private bool hasFingerGun = false;
 	[SerializeField] private float respawnDelay = 3f;
 	private Collider col;
@@ -12,6 +13,12 @@ public class Health : NetworkBehaviour
 	[HideInInspector] public bool dead = false;
 	public PlayerMovement pm;
 	public SpriteRenderer sr;
+	[SerializeField] private NetworkObject obj;
+
+	public NetworkObject GetId()
+	{
+		return obj;
+	}
 
 	public Color localColor;
 	public Color enemyColor;
@@ -36,15 +43,15 @@ public class Health : NetworkBehaviour
 		}
 	}
 
-	public void HitPlayer(Vector3 hitDir)
+	public bool HitPlayer(Vector3 hitDir)
 	{
 		if (!IsServer)
 		{
 			HitPlayerServerRpc(hitDir);
-			return;
+			return false;
 		}
 
-		HandleHit(hitDir);
+		return HandleHit(hitDir);
 	}
 
 	[ServerRpc(RequireOwnership = false)]
@@ -53,7 +60,7 @@ public class Health : NetworkBehaviour
 		HandleHit(hitDir);
 	}
 
-	private void HandleHit(Vector3 hitDir)
+	private bool HandleHit(Vector3 hitDir)
 	{
 		AudioManager.Instance.PlayHit(transform.position, 1, new Vector2(0.9f, 1f));
 		if (hasFingerGun)
@@ -66,8 +73,11 @@ public class Health : NetworkBehaviour
 			if (IsServer)
 			{
 				Die(hitDir);
+				return true;
 			}
 		}
+
+		return false;
 	}
 
 	private void Die(Vector3 hitDir)

@@ -204,15 +204,20 @@ public class FingerGun : NetworkBehaviour
         attemptedPerfectReload = true;
 	}
 
-	public void Shoot()
+	public bool Shoot(out Health h)
 	{
 		if (isReloading)
 		{
 			TryPerfectReload();
-			return;
+			h = null;
+			return false;
 		}
 
-		if (!aiming || !gunLoaded) return;
+		if (!aiming || !gunLoaded)
+		{
+			h = null;
+			return false;
+		}
 
 		Vector3 origin = transform.position + Vector3.up * 1.5f;
 
@@ -225,7 +230,8 @@ public class FingerGun : NetworkBehaviour
 		{
 			if (hit.collider.TryGetComponent(out Health health))
 			{
-				health.HitPlayer(shootDir);
+				h = health;
+				return health.HitPlayer(shootDir);
 			}
 		}
 		AudioManager.Instance.PlayShoot(transform.position, .7f, new Vector2(0.9f, 1f));
@@ -235,5 +241,8 @@ public class FingerGun : NetworkBehaviour
 
 		if (IsOwner)
 			netAimAngle.Value = currentAimAngle;
+		
+		h = null;
+		return false;
 	}
 }

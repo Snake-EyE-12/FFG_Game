@@ -1,11 +1,11 @@
 ﻿using Unity.Netcode;
 using UnityEngine;
 
-public class ImageMapLoader : MonoBehaviour
+public class ImageMapLoader : NetworkBehaviour
 {
 	[Header("Map Data")]
 	public MapCollection mapCollection;
-	public int mapIndex = 0; // which map in the array to load
+	public NetworkVariable<int> mapIndex = new NetworkVariable<int>(); // which map in the array to load
 
 	[Header("Prefabs")]
 	public GameObject groundPrefab;
@@ -27,9 +27,10 @@ public class ImageMapLoader : MonoBehaviour
 	readonly Color red = new Color(1f, 0f, 0f);    // 2 HIGH COVER
 	readonly Color cyan = new Color(0f, 1f, 1f);   // SPAWN POINT
 
-	private void Awake()
+
+	public override void OnNetworkSpawn()
 	{
-		mapIndex = Random.Range(0, mapCollection.maps.Length);
+		mapIndex.Value = Random.Range(0, mapCollection.maps.Length);
 		LoadMap();
 
 		GetComponent<MeshCombiner>().CombineMeshesPerMaterial();
@@ -43,13 +44,13 @@ public class ImageMapLoader : MonoBehaviour
 			return;
 		}
 
-		if (mapIndex < 0 || mapIndex >= mapCollection.maps.Length)
+		if (mapIndex.Value < 0 || mapIndex.Value >= mapCollection.maps.Length)
 		{
 			Debug.LogError("Map index out of range!");
 			return;
 		}
 
-		Texture2D map = mapCollection.maps[mapIndex];
+		Texture2D map = mapCollection.maps[mapIndex.Value];
 		if (map == null)
 		{
 			Debug.LogError("Selected map texture is null!");

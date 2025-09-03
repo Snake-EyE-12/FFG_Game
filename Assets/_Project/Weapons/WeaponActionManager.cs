@@ -63,10 +63,17 @@ public class WeaponActionManager : NetworkBehaviour
 			}
 			//else if (aiming)
 			//{
-				fingerGun.Shoot();
+			if (fingerGun.Shoot(out Health otherHealth))
+			{
+				ServerScoreController.Instance.ThisGuyKilledThisGuyServerRpc(
+					health.GetId(),       // killer ID
+					otherHealth.GetId()); // killed ID
+			}
 			//}
 		}
 	}
+
+	[SerializeField] private Health health;
 
 	public void HoldFrag(InputAction.CallbackContext context)
 	{
