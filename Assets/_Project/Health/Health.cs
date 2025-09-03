@@ -55,6 +55,7 @@ public class Health : NetworkBehaviour
 
 	private void HandleHit(Vector3 hitDir)
 	{
+		AudioManager.Instance.PlayHit(transform.position, 1, new Vector2(0.9f, 1f));
 		if (hasFingerGun)
 		{
 			hasFingerGun = false;

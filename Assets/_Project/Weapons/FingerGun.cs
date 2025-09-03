@@ -228,7 +228,7 @@ public class FingerGun : NetworkBehaviour
 				health.HitPlayer(shootDir);
 			}
 		}
-
+		AudioManager.Instance.PlayShoot(transform.position, .7f, new Vector2(0.9f, 1f));
 		gunLoaded = false;
 		currentAimAngle = aimStartAngle;
 		StartReload();

@@ -191,12 +191,26 @@ public class PlayerAnimationController : MonoBehaviour
 	{
 		switch (currentState)
 		{
-			case AnimationState.RUNNING_BACK:
-			case AnimationState.RUNNING_FRONT:
-			case AnimationState.RUNNING_SIDE:
 			case AnimationState.CROUCH_WALKING_FRONT:
 			case AnimationState.CROUCH_WALKING_SIDE:
 			case AnimationState.CROUCH_WALKING_BACK:
+				if (animationTimer > 0)
+				{
+					animationTimer -= Time.deltaTime;
+				}
+				else
+				{
+					animationTimer = animationTime;
+					AudioManager.Instance.PlaySneakFootstep(transform.position, 1, new Vector2(0.9f, 1f));
+
+					int index = secondaryIndex;
+					if (nSprite.SpriteIndex == secondaryIndex) index -= 1;
+					nSprite.ChangeSpriteServerRpc(index);
+				}
+				break;
+			case AnimationState.RUNNING_BACK:
+			case AnimationState.RUNNING_FRONT:
+			case AnimationState.RUNNING_SIDE:
 				if(animationTimer > 0)
 				{
 					animationTimer -= Time.deltaTime;
@@ -204,6 +218,7 @@ public class PlayerAnimationController : MonoBehaviour
 				else
 				{
 					animationTimer = animationTime;
+					AudioManager.Instance.PlayFootstep(transform.position, 1, new Vector2(0.9f,1f));
 
 					int index = secondaryIndex;
 					if(nSprite.SpriteIndex == secondaryIndex) index -= 1;

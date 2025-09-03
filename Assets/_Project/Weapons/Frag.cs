@@ -70,6 +70,7 @@ public class Frag : NetworkBehaviour
 	{
 		if (localExploded) return;
 		localExploded = true;
+		AudioManager.Instance.PlayFragExplosion(transform.position, .7f, new Vector2(0.9f, 1f));
 
 		SpawnExplosionClientRpc(transform.position);
 

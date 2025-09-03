@@ -84,6 +84,7 @@ public class FragManager : NetworkBehaviour
 
 		SpawnPredictedFrag(hitPoint);
 		ThrowFragServerRpc(hitPoint);
+		AudioManager.Instance.PlayFragThrow(transform.position, .7f, new Vector2(0.9f, 1f));
 
 		return true;
 	}

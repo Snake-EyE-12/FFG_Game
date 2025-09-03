@@ -392,6 +392,7 @@ public class PlayerMovement : NetworkBehaviour
 				SetAnimCrouchWalkDir();
 				break;
 			case MoveState.SLIDING:
+				AudioManager.Instance.PlaySlide(transform.position, 1, new Vector2(0.9f, 1f));
 				SetAnimSlideDir();
 				slideTimer = Time.time;
 				slideDir = moveDir;
