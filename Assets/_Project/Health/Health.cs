@@ -13,10 +13,27 @@ public class Health : NetworkBehaviour
 	public PlayerMovement pm;
 	public SpriteRenderer sr;
 
+	public Color localColor;
+	public Color enemyColor;
+
 	private void Awake()
 	{
 		col = GetComponent<Collider>();
 		rend = GetComponent<Renderer>();
+	}
+
+	public override void OnNetworkSpawn()
+	{
+		base.OnNetworkSpawn();
+
+		if (IsOwner)
+		{
+			sr.color = localColor;
+		}
+		else
+		{
+			sr.color = enemyColor;
+		}
 	}
 
 	public void HitPlayer(Vector3 hitDir)
