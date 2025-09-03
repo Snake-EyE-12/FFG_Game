@@ -22,5 +22,8 @@ public class GameManager : Singleton<GameManager>
 	private void OnGameEnd()
 	{
 		inGame = false; // not set to happen anywhere yet. OnGameEnd needs to be invoked.
+		changer.ChangeScene();
 	}
+
+	[SerializeField] private NetworkSceneChanger changer;
 }

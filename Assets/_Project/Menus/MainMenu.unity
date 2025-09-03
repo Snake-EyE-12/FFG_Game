@@ -461,6 +461,7 @@ GameObject:
   m_Component:
   - component: {fileID: 654901012}
   - component: {fileID: 654901013}
+  - component: {fileID: 654901014}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -497,6 +498,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
   inGame: 0
+  changer: {fileID: 654901014}
+--- !u!114 &654901014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 654901011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14ef537c56394ba2b14f86086a03f822, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneToLoad: EndScene
 --- !u!1 &773784802 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3903175197092755660, guid: 6c9ead98ba42037439eb2548afc7fdde, type: 3}
