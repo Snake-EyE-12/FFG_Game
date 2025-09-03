@@ -1276,7 +1276,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  - {fileID: 2100000, guid: 25a006310ebd1a84584fe2b35d2f349d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1298,7 +1298,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 6be2d5c738be77d498b55263bb65ca11, type: 3}
-  m_Color: {r: 0.6516499, g: 1, b: 0.50628924, a: 1}
+  m_Color: {r: 0.6064485, g: 0.2501482, b: 0.8553459, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -1351,24 +1351,24 @@ MonoBehaviour:
   - {fileID: -1701364419, guid: e0d6bdae749be0042ac252d02b1849f9, type: 3}
   - {fileID: 1010528601, guid: 68d2b18683a21df41b911f2fbd138f05, type: 3}
   - {fileID: -1062833721, guid: 68d2b18683a21df41b911f2fbd138f05, type: 3}
-  - {fileID: 21300000, guid: 7d9ab300cf018e24d98817f14bff3200, type: 3}
-  - {fileID: 21300000, guid: 7d9ab300cf018e24d98817f14bff3200, type: 3}
-  - {fileID: 21300000, guid: 7d9ab300cf018e24d98817f14bff3200, type: 3}
-  - {fileID: 21300000, guid: 7d9ab300cf018e24d98817f14bff3200, type: 3}
-  - {fileID: 21300000, guid: 7d9ab300cf018e24d98817f14bff3200, type: 3}
-  - {fileID: 21300000, guid: 7d9ab300cf018e24d98817f14bff3200, type: 3}
-  - {fileID: 21300000, guid: 7d9ab300cf018e24d98817f14bff3200, type: 3}
-  - {fileID: 21300000, guid: 7d9ab300cf018e24d98817f14bff3200, type: 3}
-  - {fileID: 21300000, guid: 7d9ab300cf018e24d98817f14bff3200, type: 3}
-  - {fileID: 21300000, guid: 7d9ab300cf018e24d98817f14bff3200, type: 3}
-  - {fileID: 21300000, guid: 7d9ab300cf018e24d98817f14bff3200, type: 3}
-  - {fileID: 21300000, guid: 7d9ab300cf018e24d98817f14bff3200, type: 3}
-  - {fileID: 21300000, guid: 7d9ab300cf018e24d98817f14bff3200, type: 3}
-  - {fileID: 21300000, guid: 7d9ab300cf018e24d98817f14bff3200, type: 3}
-  - {fileID: 21300000, guid: 7d9ab300cf018e24d98817f14bff3200, type: 3}
-  - {fileID: 21300000, guid: 7d9ab300cf018e24d98817f14bff3200, type: 3}
-  - {fileID: 21300000, guid: 7d9ab300cf018e24d98817f14bff3200, type: 3}
-  - {fileID: 21300000, guid: 7d9ab300cf018e24d98817f14bff3200, type: 3}
+  - {fileID: 21300000, guid: a4ae1fef401636542b82bd1d5feb4039, type: 3}
+  - {fileID: 21300000, guid: 0324aee23479c8a41833f27c23827f0f, type: 3}
+  - {fileID: 21300000, guid: 8e626ac4a394bef469269d7261e941b5, type: 3}
+  - {fileID: -848211204, guid: b945ca681fe06da4e94df78dd0e77e0b, type: 3}
+  - {fileID: 1228074738, guid: b945ca681fe06da4e94df78dd0e77e0b, type: 3}
+  - {fileID: -1588480832, guid: c5522717f558a594395f2b3c563b1db9, type: 3}
+  - {fileID: 1228074738, guid: b945ca681fe06da4e94df78dd0e77e0b, type: 3}
+  - {fileID: 1347492644, guid: 1fec95ef74698d648b664ed5950bc86c, type: 3}
+  - {fileID: -205019425, guid: 1fec95ef74698d648b664ed5950bc86c, type: 3}
+  - {fileID: 21300000, guid: 7857edb1a10525f4da6cd21831a4cedd, type: 3}
+  - {fileID: 21300000, guid: f8b0eff9aed92d74dba5d7d1f65dcad2, type: 3}
+  - {fileID: 21300000, guid: 21fe6370d70fe124cbbdb0be8981efee, type: 3}
+  - {fileID: 21300000, guid: b0e0dc214398f80439a1ec4000b27991, type: 3}
+  - {fileID: 21300000, guid: ae045f21d5fd5da448546b967e3e9376, type: 3}
+  - {fileID: 21300000, guid: 0c3313254b1cd014ba85547406216343, type: 3}
+  - {fileID: 21300000, guid: 98db4dd13d4eccf4a865e1313f6b9786, type: 3}
+  - {fileID: 21300000, guid: 966d282293afdd2469b792d2ee715ff7, type: 3}
+  - {fileID: 21300000, guid: 7ac18e9f276b79644876429b7740a6d9, type: 3}
 --- !u!114 &3515908606548066905
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -254,4 +254,46 @@ public class PlayerAnimationController : MonoBehaviour
 				break;
 		}
 	}
+
+
+	public void UpdateNadeAimAngle(float angle)
+	{
+		currentAimAngle = angle;
+
+		int sectorCount = 6;
+		float sectorSize = 360f / sectorCount;
+		float offset = 0f;
+
+		float normalized = (angle + 360f + offset) % 360f;
+
+		int sectorIndex = Mathf.FloorToInt(normalized / sectorSize);
+
+		switch (sectorIndex)
+		{
+			case 0:
+				ChangeState(AnimationState.AIMING_NADE_UP);
+				FlipX(false);
+				break;
+			case 1:
+				ChangeState(AnimationState.AIMING_NADE_UP);
+				FlipX(true);
+				break;
+			case 2:
+				ChangeState(AnimationState.AIMING_NADE_SIDE);
+				FlipX(false);
+				break;
+			case 3:
+				ChangeState(AnimationState.AIMING_NADE_SIDE);
+				FlipX(true);
+				break;
+			case 4:
+				ChangeState(AnimationState.AIMING_NADE_DOWN);
+				FlipX(false);
+				break;
+			case 5:
+				ChangeState(AnimationState.AIMING_NADE_DOWN);
+				FlipX(true);
+				break;
+		}
+	}
 }

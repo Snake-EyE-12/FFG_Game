@@ -62,6 +62,8 @@ public class FragManager : NetworkBehaviour
 			hitPoint = ray.GetPoint(enter);
 			Vector3 dir = hitPoint - transform.position;
 
+			PlayerMovement.LocalInstance.UpdateAimAngle(dir);
+
 			if (dir.magnitude > maxThrowDist)
 				hitPoint = transform.position + dir.normalized * maxThrowDist;
 
@@ -107,12 +109,14 @@ public class FragManager : NetworkBehaviour
 	public bool TryHoldFrag()
 	{
 		holdingFrag = currentFragCount > 0;
+		PlayerMovement.LocalInstance.OnTryHoldFrag(holdingFrag);
 		return holdingFrag;
 	}
 
 	public void StopHoldFrag()
 	{
 		holdingFrag = false;
+		PlayerMovement.LocalInstance.OnTryHoldFrag(holdingFrag);
 	}
 
 	public int GetCurrentFragCount() => currentFragCount;

@@ -16,6 +16,7 @@ public class PlayerMovement : NetworkBehaviour
     {
         IDLE,
         AIMING,
+		AIMING_NADE,
         RUNNING,
         CROUCHING,
 		CROUCH_WALKING,
@@ -383,6 +384,7 @@ public class PlayerMovement : NetworkBehaviour
 				SetAnimRunDir();
 				break;
 			case MoveState.CROUCHING:
+				SetAnimCrouchDir();
 				break;
 			case MoveState.CROUCH_WALKING:
 				UpdateFlip();
@@ -404,6 +406,9 @@ public class PlayerMovement : NetworkBehaviour
 				break;
 			case MoveState.AIMING:
 				animationController.UpdateAimAngle(currentAimAngle);
+				break;
+			case MoveState.AIMING_NADE:
+				animationController.UpdateNadeAimAngle(currentAimAngle);
 				break;
 			case MoveState.RUNNING:
 				break;
@@ -457,9 +462,12 @@ public class PlayerMovement : NetworkBehaviour
 	}
 
 	private float currentAimAngle;
-	public void UpdateAimAngle(float angle)
+	public void UpdateAimAngle(Vector3 aimDir)
 	{
-		currentAimAngle = angle;
+		float angleRad = Mathf.Atan2(aimDir.z, aimDir.x);
+		float angleDeg = angleRad * Mathf.Rad2Deg;
+		if (angleDeg < 0) angleDeg += 360;
+		currentAimAngle = angleDeg;
 	}
 
 
@@ -527,6 +535,22 @@ public class PlayerMovement : NetworkBehaviour
 		}
 	}
 
+	private void SetAnimCrouchDir()
+	{
+		switch (recentDir)
+		{
+			case MoveDirection.UP:
+				animationController.ChangeState(PlayerAnimationController.AnimationState.CROUCHING_BACK);
+				break;
+			case MoveDirection.SIDE:
+				animationController.ChangeState(PlayerAnimationController.AnimationState.CROUCHING_SIDE);
+				break;
+			case MoveDirection.DOWN:
+				animationController.ChangeState(PlayerAnimationController.AnimationState.CROUCHING_FRONT);
+				break;
+		}
+	}
+
 	private void SetAnimSlideDir()
 	{
 		switch (GetMoveDirection())
@@ -540,6 +564,23 @@ public class PlayerMovement : NetworkBehaviour
 			case MoveDirection.DOWN:
 				animationController.ChangeState(PlayerAnimationController.AnimationState.SLIDING_DOWN);
 				break;
+		}
+	}
+
+	public void OnTryHoldFrag(bool holdingFrag)
+	{
+		if (holdingFrag) ChangeState(MoveState.AIMING_NADE);
+		else
+		{
+			switch (currentMoveState)
+			{
+				case MoveState.AIMING_NADE:
+					if (moveDir == Vector2.zero)
+						ChangeState(MoveState.IDLE);
+					else 
+						ChangeState(MoveState.RUNNING);
+					break;
+			}
 		}
 	}
 }
